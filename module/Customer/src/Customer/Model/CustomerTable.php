@@ -73,8 +73,11 @@ class CustomerTable {
        $row = $rowset->current();
        
        if(!$row) {
-            echo $username." ". $parola;
            throw new \Exception ('Nu exista acest utilizator.');
+       }
+       
+       if($row->id_grup == 4){
+           throw new \Exception ('Acest cont a fost blocat. Pentru informatii contactati unul din operatorii nostrii.');
        }
        
        $login = new Container('utilizator');

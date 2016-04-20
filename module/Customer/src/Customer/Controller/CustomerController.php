@@ -89,7 +89,6 @@ class CustomerController  extends AbstractActionController{
             return $this->redirect()->toRoute('customer', array('action' => 'error', 'id' => 1));
         }
         
-        
         $form = new CustomerForm();
         $form->get('submit')->setValue('Login');
         $request = $this->getRequest();
