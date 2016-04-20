@@ -47,7 +47,6 @@ class AdminTable
    {
        $username = $admin->nume;
        $parola = $admin->parola;
-       
        $rowset = $this->tableGateway->select(array('username' => $username, 'parola' => $parola));
        $row = $rowset->current();
        

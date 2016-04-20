@@ -68,15 +68,7 @@ class CustomerController  extends AbstractActionController{
     public function grupAction() {
         return array (
             'grupuri' => $this->getGrupTable()->fetchAll(),); 
-    }
-    /**
-     * actiune afisare clienti
-     * @return type
-     */
-    public function customerAction() {
-        return array (
-            'clienti' => $this->getCustomerTable()->fetchAll(),);
-        }
+    } 
     /**
      * actiune afisare pagina principala
      */
@@ -96,7 +88,6 @@ class CustomerController  extends AbstractActionController{
         if(isset($username)) {
             return $this->redirect()->toRoute('customer', array('action' => 'error', 'id' => 1));
         }
-        
         
         $form = new CustomerForm();
         $form->get('submit')->setValue('Login');
@@ -280,7 +271,7 @@ class CustomerController  extends AbstractActionController{
                 
                 $adresa->exchangeArray($form->getData());
                 $this->getAdresaTable()->adaugaAdresa($adresa);
-                    return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa'));       
+                    return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa', 'id' => $id_customer));       
             }
         }
         return array('form' => $form);
@@ -355,9 +346,12 @@ class CustomerController  extends AbstractActionController{
          if (!$id) {
              return $this->redirect()->toRoute('customer');
          }
-
-         $request = $this->getRequest();
-         if ($request->isPost()) {
+         
+        $login = new Container('utilizator');
+        $id_customer = $login->id;
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
              $del = $request->getPost('deladresa', 'Nu');
 
              if ($del == 'Da') {
@@ -365,7 +359,7 @@ class CustomerController  extends AbstractActionController{
                  $this->getAdresaTable()->stergeAdresa($id);
              }
 
-            return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa'));
+            return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa', 'id' => $id_customer));
          }
 
          return array(
@@ -374,18 +368,16 @@ class CustomerController  extends AbstractActionController{
          );
      }
     /**
-     * sterge client
-     * @param type $param
+     * returneaza eroare
      */
-    public function stergecustomerAction() {
+    public function errorAction(){
+        
          $id = (int) $this->params()->fromRoute('id', 0);
-         if (!$id) {
-             return $this->redirect()->toRoute('login');
-         }
-         
-         $this->getCustomerTable()->stergeCustomer($id);
-         
-         return $this->redirect()->toRoute('customer', array('action' => 'customer'));
-         }
+        if($id == 1) {
+            echo "Sunteti deja autentificat.<a href=\"../logout\">Logout</a>";
+        } elseif($id == 2) {
+             echo "S-a produs o eroare, utilizatorul cu acest id nu exista.";
+        }
+    }
     
 }

@@ -1,0 +1,25 @@
+<?php $title = 'Adrese';
+$this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">  
+    <tr>
+        <th>Judet</th>
+        <th>Oras</th>
+        <th>Strada</th>
+        <th>Numar</th>
+    </tr>
+<?php foreach($adrese as $adresa) : ?>
+    <tr>
+        <td><?php echo $this->escapeHtml($adresa->adresa->judet);?></td>
+        <td><?php echo $this->escapeHtml($adresa->adresa->oras);?></td>
+        <td><?php echo $this->escapeHtml($adresa->adresa->strada);?></td>
+        <td><?php echo $this->escapeHtml($adresa->adresa->numar);?></td>
+        <td><a href="<?php echo $this->url('admin',
+             array('action'=>'stergeadresa', 'id' => $adresa->id));?>">Delete</a></td>
+    </tr>
+   
+<?php endforeach; ?>
+    
+</table>
