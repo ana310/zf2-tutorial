@@ -272,7 +272,7 @@ class CustomerController  extends AbstractActionController{
                 
                 $adresa->exchangeArray($form->getData());
                 $this->getAdresaTable()->adaugaAdresa($adresa);
-                    return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa'));       
+                    return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa', 'id' => $id_customer));       
             }
         }
         return array('form' => $form);
@@ -347,9 +347,12 @@ class CustomerController  extends AbstractActionController{
          if (!$id) {
              return $this->redirect()->toRoute('customer');
          }
-
-         $request = $this->getRequest();
-         if ($request->isPost()) {
+         
+        $login = new Container('utilizator');
+        $id_customer = $login->id;
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
              $del = $request->getPost('deladresa', 'Nu');
 
              if ($del == 'Da') {
@@ -357,7 +360,7 @@ class CustomerController  extends AbstractActionController{
                  $this->getAdresaTable()->stergeAdresa($id);
              }
 
-            return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa'));
+            return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa', 'id' => $id_customer));
          }
 
          return array(
@@ -365,6 +368,17 @@ class CustomerController  extends AbstractActionController{
              'adresa' => $this->getAdresaTable()->getAdresa($id)
          );
      }
-    
+    /**
+     * returneaza eroare
+     */
+    public function errorAction(){
+        
+         $id = (int) $this->params()->fromRoute('id', 0);
+        if($id == 1) {
+            echo "Sunteti deja autentificat.<a href=\"../logout\">Logout</a>";
+        } elseif($id == 2) {
+             echo "S-a produs o eroare, utilizatorul cu acest id nu exista.";
+        }
+    }
     
 }

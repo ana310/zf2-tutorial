@@ -52,7 +52,7 @@ class AdresaTable {
            'numar' =>$adresa->numar,
        );
        
-       $id = (int) $adresa->id;
+       $id = (int) $adresa->ida;
        if($id == 0) {
                 $this->tableGateway->insert($data); 
                 $id_adresa = $this->tableGateway->getLastInsertValue();
@@ -83,7 +83,7 @@ class AdresaTable {
        }
    }
    
-    public function stergeadresa($id) {
+    public function stergeAdresa($id) {
         $adapter = $this->tableGateway->getAdapter();    
         $sql1 = new Sql($adapter);
         $delete = $sql1->delete('adresa_customer')->where("id_adresa = $id");

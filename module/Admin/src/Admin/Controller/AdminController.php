@@ -23,9 +23,12 @@ class AdminController extends AbstractActionController
     protected $adminTable;
     protected $albumTable;
     protected $customerTable;
-    
-    public function getAdminTable()
-    {
+    protected $adresaTable;
+    /**
+     * tabela administartor
+     * @return type
+     */
+    public function getAdminTable() {
         if(!($this->adminTable))
         {
             $sm  = $this->getServiceLocator();
@@ -45,16 +48,32 @@ class AdminController extends AbstractActionController
         }
         return $this->customerTable;
     }
-    
-    public function getAlbumTable()
-     {
+    /**
+     * tabela album
+     * @return type
+     */
+    public function getAlbumTable(){
          if (!$this->albumTable) {
              $sm = $this->getServiceLocator();
              $this->albumTable = $sm->get('Album\Model\AlbumTable');
          }
          return $this->albumTable;
      }
-     
+      /**
+     * tabela adresa
+     * @return type
+     */
+    public function getAdresaTable(){
+         if (!$this->adresaTable) {
+             $sm = $this->getServiceLocator();
+             $this->adresaTable = $sm->get('Customer\Model\AdresaTable');
+         }
+         return $this->adresaTable;
+     }
+     /**
+      * autentificare administrator
+      * @return type
+      */
     public function indexAction() {
          
         $login = new Container('utilizator');
@@ -87,7 +106,10 @@ class AdminController extends AbstractActionController
 
         return array('form' => $form);
     }
-    
+    /**
+     * afisare admin
+     * @return ViewModel
+     */
     public function aAction() {
         
          $login = new Container('utilizator');
@@ -97,12 +119,19 @@ class AdminController extends AbstractActionController
                    'username' =>$username,
          ));
     }
+    /**
+     * afisare albume
+     * @return ViewModel
+     */
     public function afisareAction(){
          return new ViewModel (array (
             'albume' => $this->getAlbumTable()->fetchAll(),  ));
          
     }
-    
+    /**
+     * delogare administrator
+     * @return type
+     */
     public function logoutAction() {
         
         $request = $this->getRequest();
@@ -119,7 +148,9 @@ class AdminController extends AbstractActionController
                  return $this->redirect()->toRoute('admin', array('action' => 'a')); }
          }
     }
-    
+    /**
+     * returneaza eroare
+     */
     public function errorAction(){
         
          $id = (int) $this->params()->fromRoute('id', 0);
@@ -157,14 +188,17 @@ class AdminController extends AbstractActionController
      */
      public function afiseazaadresaAction(){
          
+         
          $id = (int) $this->params()->fromRoute('id', 0);
          
+         $idutilizator = new Container('idu');
+         $idutilizator->id = $id;
          if (!$id) {
              return $this->redirect()->toRoute('admin', array(
-                 'action' => 'customer'
+                 'action' => 'error', 'id' => 2,
              ));
          }
-
+         
          try {
              $this->getCustomerTable()->getCustomer($id);
          }
@@ -229,4 +263,32 @@ class AdminController extends AbstractActionController
              'form' => $form,
          );
     }
+    /**
+     * sterge adresa customer
+     * @return type
+     */
+     public function stergeadresaAction(){
+         $id = (int) $this->params()->fromRoute('id', 0);
+         if (!$id) {
+             return $this->redirect()->toRoute('admin');
+         }
+         $idutilizator = new Container('idu');
+         
+         $request = $this->getRequest();
+         if ($request->isPost()) {
+             $del = $request->getPost('deladresa', 'Nu');
+
+             if ($del == 'Da') {
+                 $id = (int) $request->getPost('id');
+                 $this->getAdresaTable()->stergeAdresa($id);
+             }
+
+            return $this->redirect()->toRoute('admin', array('action' => 'afiseazaadresa','id' => $idutilizator->id));
+         }
+
+         return array(
+             'id'    => $id,
+             'adresa' => $this->getAdresaTable()->getAdresa($id)
+         );
+     }
 }

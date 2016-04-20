@@ -3,13 +3,7 @@ $this->headTitle($title);
 ?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<table class="table">
-    <tr>
-        <td>
-            <a href="<?php echo $this->url('customer',
-             array('action'=>'addadresa'));?>">Adauga</a>
-        </td>
-    </tr>
+<table class="table">  
     <tr>
         <th>Judet</th>
         <th>Oras</th>
@@ -22,9 +16,7 @@ $this->headTitle($title);
         <td><?php echo $this->escapeHtml($adresa->adresa->oras);?></td>
         <td><?php echo $this->escapeHtml($adresa->adresa->strada);?></td>
         <td><?php echo $this->escapeHtml($adresa->adresa->numar);?></td>
-        <td><a href="<?php echo $this->url('customer',
-             array('action'=>'editadresa', 'id' => $adresa->id));?>">Edit</a></td>
-        <td><a href="<?php echo $this->url('customer',
+        <td><a href="<?php echo $this->url('admin',
              array('action'=>'stergeadresa', 'id' => $adresa->id));?>">Delete</a></td>
     </tr>
    
