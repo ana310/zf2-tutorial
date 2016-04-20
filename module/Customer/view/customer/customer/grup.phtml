@@ -1,0 +1,13 @@
+
+<table class="table">
+ <tr>
+     <th>Nume</th>
+    
+ </tr>
+ <?php foreach ($grupuri as $grup) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($grup->nume);?></td>
+     
+ </tr>
+ <?php endforeach; ?>
+ </table>

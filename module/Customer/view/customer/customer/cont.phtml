@@ -1,0 +1,36 @@
+<?php $title = 'Contul meu';
+$this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <tr>
+        <th>Username</th>
+        <th>Nume</th>
+        <th>Prenume</th>
+        <th>Varsta</th>
+        <th>Email</th>
+        <th>Telefon</th>
+        <th>Data-inregistrare</th>
+        <th>Data-modificare</th>
+        <th>Grup</th>
+    </tr>
+
+    <tr>
+        <td><?php echo $this->escapeHtml($cont->username);?></td>
+        <td><?php echo $this->escapeHtml($cont->nume);?></td>
+        <td><?php echo $this->escapeHtml($cont->prenume);?></td>
+        <td><?php echo $this->escapeHtml($cont->varsta);?></td>
+        <td><?php echo $this->escapeHtml($cont->email);?></td>
+        <td><?php echo $this->escapeHtml($cont->telefon);?></td>
+        <td><?php echo $this->escapeHtml($cont->data_inregistrare);?></td>
+        <td><?php echo $this->escapeHtml($cont->data_modificare);?></td>
+        <td><?php echo $this->escapeHtml($cont->id_grup);?></td>
+        <td><a href="<?php echo $this->url('customer',
+             array('action'=>'edit', 'id' => $cont->id));?>">Edit</a></td>
+        <td><a href="<?php echo $this->url('customer',
+             array('action'=>'afiseazaadresa', 'id' => $cont->id));?>">Afiseaza adresele</a></td>
+    </tr>
+
+    
+</table>

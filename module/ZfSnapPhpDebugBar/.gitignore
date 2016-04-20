@@ -1,0 +1,4 @@
+composer.lock
+tests/assets/local.config.php
+vendor/
+build/

@@ -1,0 +1,26 @@
+<?php
+ $title = 'Sterge adresa';
+ $this->headTitle($title);
+ ?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <p>Esti sigur ca doresti sa stergi aceasta adresa: 
+     Judetul: <?php echo $this->escapeHtml($adresa->judet); ?>, 
+     Orasul: <?php echo $this->escapeHtml($adresa->oras); ?>,
+     Strada: <?php echo $this->escapeHtml($adresa->strada); ?>,
+     Numarul: <?php echo $this->escapeHtml($adresa->numar); ?>
+ </p>
+ <?php
+ $url = $this->url('customer', array(
+     'action' => 'stergeadresa',
+     'id'     => $this->id,
+ ));
+ ?>
+ <form action="<?php echo $url; ?>" method="post">
+ <div>
+     <input type="hidden" name="id" value="<?php echo (int) $adresa->id; ?>" />
+     <input type="submit" name="deladresa" value="Da" />
+     <input type="submit" name="deladresa" value="Nu" />
+ </div>
+ </form>
+ 

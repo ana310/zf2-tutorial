@@ -1,0 +1,52 @@
+<?php $title = 'Clienti';
+$this->headTitle($title);
+?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <tr>
+        <th>Username</th>
+        <th>Nume</th>
+        <th>Prenume</th>
+        <th>Varsta</th>
+        <th>Email</th>
+        <th>Telefon</th>
+        <th>Data-inregistrare</th>
+        <th>Data-modificare</th>
+        <th>Grup</th>
+    </tr>
+<?php foreach($clienti as $client) : ?>
+    <tr>
+        <td><?php echo $this->escapeHtml($client->username);?></td>
+        <td><?php echo $this->escapeHtml($client->nume);?></td>
+        <td><?php echo $this->escapeHtml($client->prenume);?></td>
+        <td><?php echo $this->escapeHtml($client->varsta);?></td>
+        <td><?php echo $this->escapeHtml($client->email);?></td>
+        <td><?php echo $this->escapeHtml($client->telefon);?></td>
+        <td><?php echo $this->escapeHtml($client->data_inregistrare);?></td>
+        <td><?php echo $this->escapeHtml($client->data_modificare);?></td>
+        <td><?php if($client->id_grup == 4) {
+                 echo "Blacklist";}
+            elseif($client->id_grup == 3){
+                { echo "Telefonic";}
+            } elseif($client->id_grup == 2){
+                { echo "Email";}
+            } else
+                { echo "General";}?>
+        </td>
+        <td>
+            <a href="<?php echo $this->url('customer',array('action'=>'stergecustomer', 'id' => $client->id));?>">
+            <?php if($client->id_grup == 4) {
+                 echo "Adauga la general";
+            } else
+                { echo "Adauga la blacklist";}?>    
+            </a>
+            </td>
+        <td><a href="<?php echo $this->url('customer',
+                array('action'=>'edit', 'id' => $client->id));?>">Edit</a></td>
+         <td><a href="<?php echo $this->url('customer',
+             array('action'=>'afiseazaadresa', 'id' => $client->id));?>">Adrese</a></td>
+    </tr>
+<?php endforeach; ?>
+    
+</table>

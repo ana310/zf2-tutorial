@@ -1,0 +1,15 @@
+<?php $title = 'Logout';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <p>Sunteti sigur ca doriti sa iesiti?</p>
+ <?php
+ $url = $this->url('admin', array('action' => 'logout',));
+ ?>
+ <form action="<?php echo $url; ?>" method="post">
+ <div>
+     <input type="submit" name="logout" value="Da" />
+     <input type="submit" name="logout" value="Nu" />
+ </div>
+ </form>

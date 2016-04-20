@@ -1,0 +1,16 @@
+<?php
+$title = 'Adauga adresa';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <?php
+ $form->prepare();
+
+ echo $this->form()->openTag($form)."</br>";
+ echo $this->formRow($form->get('judet'))."</br>";
+ echo $this->formRow($form->get('oras'))."</br>";
+ echo $this->formRow($form->get('strada'))."</br>";
+ echo $this->formRow($form->get('numar'))."</br>";
+ echo $this->formSubmit($form->get('submit'))."</br>";
+ echo $this->form()->closeTag();
+ 

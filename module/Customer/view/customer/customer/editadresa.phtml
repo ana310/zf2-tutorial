@@ -1,0 +1,24 @@
+<?php
+$title = 'Edit adresa';
+$this->headTitle($title);
+$form = $this->form;
+ $form->setAttribute('action', $this->url(
+     'customer',
+     array(
+         'action' => 'editadresa',
+         'id'     => $this->id,
+     )
+   ));
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <?php
+ $form->prepare();
+
+ echo $this->form()->openTag($form)."</br>";
+ echo $this->formRow($form->get('judet'))."</br>";
+ echo $this->formRow($form->get('oras'))."</br>";
+ echo $this->formRow($form->get('strada'))."</br>";
+ echo $this->formRow($form->get('numar'))."</br>";
+ echo $this->formSubmit($form->get('submit'))."</br>";
+ echo $this->form()->closeTag();
+ 
