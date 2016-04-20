@@ -68,15 +68,7 @@ class CustomerController  extends AbstractActionController{
     public function grupAction() {
         return array (
             'grupuri' => $this->getGrupTable()->fetchAll(),); 
-    }
-    /**
-     * actiune afisare clienti
-     * @return type
-     */
-    public function customerAction() {
-        return array (
-            'clienti' => $this->getCustomerTable()->fetchAll(),);
-        }
+    } 
     /**
      * actiune afisare pagina principala
      */
@@ -373,19 +365,6 @@ class CustomerController  extends AbstractActionController{
              'adresa' => $this->getAdresaTable()->getAdresa($id)
          );
      }
-    /**
-     * sterge client
-     * @param type $param
-     */
-    public function stergecustomerAction() {
-         $id = (int) $this->params()->fromRoute('id', 0);
-         if (!$id) {
-             return $this->redirect()->toRoute('login');
-         }
-         
-         $this->getCustomerTable()->stergeCustomer($id);
-         
-         return $this->redirect()->toRoute('customer', array('action' => 'customer'));
-         }
+    
     
 }

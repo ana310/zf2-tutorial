@@ -35,16 +35,16 @@ $this->headTitle($title);
                 { echo "General";}?>
         </td>
         <td>
-            <a href="<?php echo $this->url('customer',array('action'=>'stergecustomer', 'id' => $client->id));?>">
+            <a href="<?php echo $this->url('admin',array('action'=>'stergecustomer', 'id' => $client->id));?>">
             <?php if($client->id_grup == 4) {
                  echo "Adauga la general";
             } else
                 { echo "Adauga la blacklist";}?>    
             </a>
             </td>
-        <td><a href="<?php echo $this->url('customer',
+        <td><a href="<?php echo $this->url('admin',
                 array('action'=>'edit', 'id' => $client->id));?>">Edit</a></td>
-         <td><a href="<?php echo $this->url('customer',
+         <td><a href="<?php echo $this->url('admin',
              array('action'=>'afiseazaadresa', 'id' => $client->id));?>">Adrese</a></td>
     </tr>
 <?php endforeach; ?>

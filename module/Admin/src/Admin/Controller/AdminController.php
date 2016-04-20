@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Admin\Form\AdminForm;
 use Admin\Model\Admin;
-
+use Customer\Form\RegisterForm;
 /**
  * Description of AdminController
  *
@@ -22,6 +22,7 @@ class AdminController extends AbstractActionController
 {
     protected $adminTable;
     protected $albumTable;
+    protected $customerTable;
     
     public function getAdminTable()
     {
@@ -32,6 +33,17 @@ class AdminController extends AbstractActionController
             
         }
         return $this->adminTable;
+    }
+     /**
+     * returneaza tabela customer
+     * @return type
+     */
+    public function getCustomerTable(){
+        if(!($this->customerTable)){
+            $sm = $this->getServiceLocator();
+            $this->customerTable = $sm->get('Customer\Model\CustomerTable');
+        }
+        return $this->customerTable;
     }
     
     public function getAlbumTable()
@@ -113,7 +125,108 @@ class AdminController extends AbstractActionController
          $id = (int) $this->params()->fromRoute('id', 0);
         if($id == 1) {
             echo "Sunteti deja autentificat.<a href=\"../logout\">Logout</a>";
+        } elseif($id == 2) {
+             echo "S-a produs o eroare, utilizatorul cu acest id nu exista.";
         }
     }
+    /**
+     * actiune afisare clienti
+     * @return type
+     */
+    public function customerAction() {
+        return array (
+            'clienti' => $this->getCustomerTable()->fetchAll(),);
+    }
+    /**
+     * sterge client
+     * @param type $param
+     */
+    public function stergecustomerAction() {
+         $id = (int) $this->params()->fromRoute('id', 0);
+         if (!$id) {
+             return $this->redirect()->toRoute('login');
+         }
+         
+         $this->getCustomerTable()->stergeCustomer($id);
+         
+         return $this->redirect()->toRoute('admin', array('action' => 'customer'));
+         } 
+    /**
+     * afisare adrese clietni
+     * @return type
+     */
+     public function afiseazaadresaAction(){
+         
+         $id = (int) $this->params()->fromRoute('id', 0);
+         
+         if (!$id) {
+             return $this->redirect()->toRoute('admin', array(
+                 'action' => 'customer'
+             ));
+         }
+
+         try {
+             $this->getCustomerTable()->getCustomer($id);
+         }
+         catch (\Exception $ex) {
+             return $this->redirect()->toRoute('admin', array(
+                 'action' => 'login'
+             ));
+         }
     
+        return array('adrese' => $this->getCustomerTable()->join($id));    
+    
+     }
+     /**
+    * editare informatii client 
+    * @return type
+    */
+    public function editAction(){
+        
+        $id = (int) $this->params()->fromRoute('id', 0);
+         if (!$id) {
+             return $this->redirect()->toRoute('admin', array(
+                 'action' => 'error', 'id' => 2,
+             ));
+         }
+
+         try {
+             $customer = $this->getCustomerTable()->getCustomer($id);
+         }
+         catch (\Exception $ex) {
+             return $this->redirect()->toRoute('customer', array(
+                 'action' => 'login'
+             ));
+         }
+
+         $form  = new RegisterForm();
+         $form->bind($customer);
+         $form->get('submit')->setAttribute('value', 'Edit');
+         $form->get('username')->setAttribute('disabled', 'disabled');
+         $form->get('email')->setAttribute('disabled', 'disabled');
+         $form->get('parola')->setAttribute('disabled', 'disabled');
+         $form->get('confirmaparola')->setAttribute('disabled', 'disabled');
+         $request = $this->getRequest();
+         
+        $edit = new Container('editare');
+        $edit->username = $form->get('username')->getValue();
+        $edit->email = $form->get('email')->getValue();
+        $edit->parola = $form->get('parola')->getValue();
+        
+         if ($request->isPost()) {
+             $form->setInputFilter($customer->getInputFilterEdit());
+             $form->setData($request->getPost());
+
+             if ($form->isValid()) {
+                 $this->getCustomerTable()->registerCustomer($customer);
+    
+                 return $this->redirect()->toRoute('admin', array('action' => 'customer'));
+             }
+         }
+
+         return array(
+             'id' => $id,
+             'form' => $form,
+         );
+    }
 }

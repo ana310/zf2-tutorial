@@ -108,10 +108,8 @@ class CustomerTable {
        $id = (int) $customer->id;
        if($id == 0) {
            //$edit->getManager()->getStorage()->clear('editare');
-           print_r($data);
             $result = $this->tableGateway->select(array('username' => $data['username']));
             $row = $result->current();
-            print_r($row);
             if($row){
                 throw new \Exception("Exista deja un utilizator cu acest username.");
             }
