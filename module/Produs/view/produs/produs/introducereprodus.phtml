@@ -1,0 +1,10 @@
+<?php $title = 'Categorii';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php foreach( $categorii as $categorie) : ?>
+     <?php echo $this->escapeHtml($categorie->denumire);?>
+      
+<?php endforeach; 
+

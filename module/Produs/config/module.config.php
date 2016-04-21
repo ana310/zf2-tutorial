@@ -14,7 +14,7 @@ return array(
     ),
     'router' => array(
         'routes' => array(
-            'customer' => array(
+            'produs' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route' => '/produs[/:action][/:id]',
@@ -33,7 +33,7 @@ return array(
     'view_manager' => array(
         
         'template_path_stack' => array(
-            'customer' => __DIR__ . '/../view',
+            'produs' => __DIR__ . '/../view',
         ),
     ),
 );
