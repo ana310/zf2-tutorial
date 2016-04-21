@@ -19,10 +19,10 @@ class AdresaForm extends Form
         
         parent::__construct('adresa');
         
-        $this->add(array(
-            'name' => 'id',
-            'options' => 'Hidden',
-        ));
+         $this->add(array(
+             'name' => 'id',
+             'type' => 'Hidden',
+         ));
         
         $this->add(array(
             'name' => 'judet',
