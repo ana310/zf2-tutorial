@@ -35,7 +35,6 @@ class AdresaTable {
        $id_adresa = (int) $id;
        $rowset = $this->tableGateway->select(array('id' => $id_adresa));
        $row = $rowset->current();
-       
        if(!$row) {
             throw new Exception("Adresa inexistenta.");
         }
@@ -53,24 +52,25 @@ class AdresaTable {
        );
        
        $id = (int) $adresa->ida;
+      // print_r($id);die;
        if($id == 0) {
-                $this->tableGateway->insert($data); 
-                $id_adresa = $this->tableGateway->getLastInsertValue();
-                
-                $login = new Container('utilizator');
-                $id_customer = $login->id;
-      
-                $adapter = $this->tableGateway->getAdapter();    
-                $sql = new Sql($adapter);
-                $insert = $sql->insert();
-                $insert->into('adresa_customer');
-                $insert->columns(array('id_adresa','id_customer'));
-                $insert->values(array(
-                     'id_adresa' => $id_adresa,
-                    'id_customer' => $id_customer,
-                ));
-                $statement = $sql->prepareStatementForSqlObject($insert);
-                $results = $statement->execute();
+//                $this->tableGateway->insert($data); 
+//                $id_adresa = $this->tableGateway->getLastInsertValue();
+//                
+//                $login = new Container('utilizator');
+//                $id_customer = $login->id;
+//      
+//                $adapter = $this->tableGateway->getAdapter();    
+//                $sql = new Sql($adapter);
+//                $insert = $sql->insert();
+//                $insert->into('adresa_customer');
+//                $insert->columns(array('id_adresa','id_customer'));
+//                $insert->values(array(
+//                     'id_adresa' => $id_adresa,
+//                    'id_customer' => $id_customer,
+//                ));
+//                $statement = $sql->prepareStatementForSqlObject($insert);
+//                $results = $statement->execute();
      
        }
        else {

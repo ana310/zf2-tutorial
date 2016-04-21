@@ -10,7 +10,7 @@ return array(
     'modules' => array(
         
         'Application',
-        'ZfSnapPhpDebugBar',
+       // 'ZfSnapPhpDebugBar',
         'Album',
         'Admin',
         'Customer',

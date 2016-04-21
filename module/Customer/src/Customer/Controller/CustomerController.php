@@ -225,7 +225,7 @@ class CustomerController  extends AbstractActionController{
          
          if (!$id) {
              return $this->redirect()->toRoute('customer', array(
-                 'action' => 'customer'
+                 'action' => 'login'
              ));
          }
 
@@ -300,21 +300,26 @@ class CustomerController  extends AbstractActionController{
              ));
          }
 
+        $login = new Container('utilizator');
+        $id_customer = $login->id;
+        
          $form  = new AdresaForm();
          $form->bind($adresa);
+         //$form->get('id')->setAttribute('value', $id);
+       
+         $id = $this->params()->fromRoute('id',0);
+        
          $form->get('submit')->setAttribute('value', 'Edit adresa');
          $request = $this->getRequest();
-          
          if ($request->isPost()) {
             
              $form->setInputFilter($adresa->getInputFilter());
+            
              $form->setData($request->getPost());
              
-             
              if ($form->isValid()) {
-                 
-                $this->getAdresaTable()->adaugaAdresa($adresa);
-                 return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa'));
+                 $this->getAdresaTable()->adaugaAdresa($adresa,$id);
+                return $this->redirect()->toRoute('customer', array('action' => 'afiseazaadresa','id' => $id_customer ));
              }
          }
 
