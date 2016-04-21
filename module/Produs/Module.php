@@ -11,6 +11,12 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Produs\Model\Produs;
 use Produs\Model\ProdusTable;
+use Produs\Model\AtributsetTable;
+use Produs\Model\Atributset;
+use Produs\Model\Atribut;
+use Produs\Model\AtributTable;
+use Produs\Model\AtributAtributsetTable;
+use Produs\Model\AtributAtributset;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 /**
@@ -52,8 +58,40 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface{
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Produs());
-                    return new TableGateway('produs', $dbAdapter, null, $resultSetPrototype);
-                    
+                    return new TableGateway('produs', $dbAdapter, null, $resultSetPrototype); 
+                },
+                'Produs\Model\AtributsetTable' => function($sm) {
+                    $tableGateway = $sm->get('AtributsetTableGateway');
+                    $table = new AtributsetTable($tableGateway);
+                    return $table;
+                },
+                'AtributsetTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Atributset());
+                    return new TableGateway('atributset', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\AtributTable' => function($sm) {
+                    $tableGateway = $sm->get('AtributTableGateway');
+                    $table = new AtributTable($tableGateway);
+                    return $table;
+                },
+                'AtributTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Atribut());
+                    return new TableGateway('atribut', $dbAdapter, null, $resultSetPrototype);
+                },  
+                'Produs\Model\AtributAtributsetTable' => function($sm) {
+                    $tableGateway = $sm->get('AtributAtributsetTableGateway');
+                    $table = new AtributAtributsetTable($tableGateway);
+                    return $table;
+                },
+                'AtributAtributsetTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new AtributAtributset());
+                    return new TableGateway('atribut_atributset', $dbAdapter, null, $resultSetPrototype);
                 },
              ),
         );
