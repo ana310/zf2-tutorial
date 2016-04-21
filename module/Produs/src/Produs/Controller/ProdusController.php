@@ -7,6 +7,8 @@ class ProdusController  extends AbstractActionController {
     
     protected $produsTable;
     protected $atributsetTable;
+    protected $atributTable;
+    protected $atributAtributsetTable;
     
     public function getProdusTable(){
         
@@ -27,11 +29,38 @@ class ProdusController  extends AbstractActionController {
         return $this->atributsetTable;
     }
     
+    public function getAtributTable() {
+        if(!$this->atributTable) {
+            $sm = $this->getServiceLocator();
+            $this->atributTable = $sm->get('Produs\Model\AtributTable');
+        }
+        return $this->atributTable;
+    }
+    
+    public function getAtributAtributsetTable() {
+        if(!$this->atributAtributsetTable) {
+            $sm = $this->getServiceLocator();
+            $this->atributAtributsetTable = $sm->get('Produs\Model\AtributAtributsetTable');
+        }
+        return $this->atributAtributsetTable;
+    }
+    
     public function indexAction() {
         return array('produse' => $this->getProdusTable()->fetchAll(),);
     }
     
     public function introducereprodusAction(){
-        return array('categorii' => $this->getAtributsetTable()->fetchAll(),);
+        $id_categorie = (int) $this->params()->fromRoute('id', 0);
+         if (!$id_categorie) {
+             return array('categorii' => $this->getAtributsetTable()->fetchAll(),
+                     'atribute' => $this->getAtributTable()->fetchAll());
+         } else {
+              return array('categorii' => $this->getAtributsetTable()->fetchAll(),
+                     'atribute' => $this->getAtributsetTable()->joinAtribut($id_categorie)); 
+             
+         }
+             
     }
+      
+        
 }

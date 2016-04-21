@@ -21,26 +21,6 @@ private $name;
         
         parent::__construct('form');
         
-         $this->add(array(
-            'name' => 'brand',
-            'type' => 'Text',
-            'options' => array(
-                'label' => 'Brand: ',
-            ),
-        ));
-        $this->add(array(
-            'name' => 'descriere',
-            'type' => 'Text',
-            'options' =>array(
-                'label' => 'Descriere: ',
-            ),
-        ));
-        $this->add(array(
-            'name' => 'denumire',
-            'type' => 'Text',
-            'options' =>array(
-                'label' => 'Denumire: ',
-            ),
-        ));
+         
     }
 }

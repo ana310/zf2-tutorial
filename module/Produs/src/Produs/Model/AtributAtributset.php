@@ -9,37 +9,32 @@
 namespace Produs\Model;
 
 /**
- * Description of Atributset
+ * Description of AtributAtributset
  *
  * @author Mee
  */
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-use Produs\Model\Atribut;
 
-class Atributset implements InputFilterAwareInterface {
+class AtributAtributset implements InputFilterAwareInterface {
     
+    protected $inputFilter;
     public $id;
-    public $denumire;
-    public $atribut;
-    protected $inputfilter;
+    public $idatributset;
+    public $idatribut;
     
-    public function exchangeArray($data){
-    
+    public function exchangeArray($data) {
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
-        $this->denumire = (!empty($data['denumire'])) ? $data['denumire'] : null;
-        $this->atribut = new Atribut();
-        $this->atribut->exchangeArray($data);
+        $this->idatributset = (!empty($data['id_atributset'])) ? $data['id_atributset'] : null;
+        $this->idatribut = (!empty($data['id_atribut'])) ? $data['id_atribut'] : null;   
     }
     
     public function getInputFilter() {
-        $inputfilter = new InputFilter();
-        return $this->inputfilter;
+        
     }
 
     public function setInputFilter(InputFilterInterface $inputFilter) {
-        throwException("Nu il setez");
+          throwException("Nu il setez");
     }
-
 }
