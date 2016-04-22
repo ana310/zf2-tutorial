@@ -39,4 +39,14 @@ class AtributsetTable {
        return $resultSet;
         
     }
+    
+    public function getAtributsetByName($name){
+        
+       $rowset = $this->tableGateway->select(array('denumire' => $name));
+       $row = $rowset->current();
+       if (!$row) {
+           throw new Exception ("Categoria nu exista.");
+       }
+     return $row;
+    }
 }

@@ -33,6 +33,7 @@ class Atributset implements InputFilterAwareInterface {
         $this->atribut->exchangeArray($data);
     }
     
+    
     public function getInputFilter() {
         $inputfilter = new InputFilter();
         return $this->inputfilter;

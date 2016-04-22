@@ -35,8 +35,7 @@ class Atribut implements InputFilterAwareInterface{
     }
     
     public function getInputFilter() {
-        $inputfilter = new InputFilter();
-        return $this->inputfilter;
+       
     }
 
     public function setInputFilter(InputFilterInterface $inputFilter) {

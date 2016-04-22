@@ -2,6 +2,10 @@
 namespace Produs\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Form\Element;
+use Zend\Form\Form;
+use Zend\InputFilter\Input;
+use Zend\InputFilter\InputFilter;
 
 class ProdusController  extends AbstractActionController {
     
@@ -50,17 +54,59 @@ class ProdusController  extends AbstractActionController {
     }
     
     public function introducereprodusAction(){
-        $id_categorie = (int) $this->params()->fromRoute('id', 0);
-         if (!$id_categorie) {
-             return array('categorii' => $this->getAtributsetTable()->fetchAll(),
-                     'atribute' => $this->getAtributTable()->fetchAll());
-         } else {
-              return array('categorii' => $this->getAtributsetTable()->fetchAll(),
-                     'atribute' => $this->getAtributsetTable()->joinAtribut($id_categorie)); 
+        
+            $select = new Element\Select('categorii');
+            $select->setLabel('Selectati categori din care face parte produsul. ');
+            
+            $categorii = $this->getAtributsetTable()->fetchAll();
+            foreach ($categorii as $categorie) {
+               $options[$categorie->denumire] = $categorie->denumire;
+            }
              
-         }
+            $select->setValueOptions($options);
+            
+            $submit =new Element\Submit('submit');
+            $submit->setAttribute('id', 'introducere');
+            $submit->setValue('Adauga');
+            
+            
+            $form = new Form('categorii');
+            $form->add($select);
+            $form->add($submit);
+         
+            $inputCategorii = new Input('categorii');
+            $inputCategorii->isRequired();
+            
+            $inputFilter = new InputFilter();
+            $inputFilter->add($inputCategorii);
+            
+         
+           $request = $this->getRequest();
+           if($request->isPost()){
+               
+               $form->setInputFilter($inputFilter);
+               $form->setData($request->getPost());
+               
+               if($form->isValid()){
+                   
+                  $data = $form->getData();
+                  $categorie = $data['categorii'];
+                  
+                  $atributset = $this->getAtributsetTable()->getAtributsetByName($categorie);
+                 
+                  if($atributset->denumire == $categorie){
+                        $id_categorie = $atributset->id;
+                      }
+                  }
+                   return array('form' => $form, 'atribute' => $this->getAtributsetTable()->joinAtribut($id_categorie)); 
+                   
+               } else {
+                   return (array('form' => $form));
+               }  
+               
+           }      
              
     }
       
         
-}
+

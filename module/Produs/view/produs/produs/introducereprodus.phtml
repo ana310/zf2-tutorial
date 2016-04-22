@@ -2,12 +2,18 @@
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+ $form->prepare();
 
-<?php foreach( $categorii as $categorie) : ?>
-<a href="introducereprodus/<?php echo $categorie->id; ?>"> <?php echo $this->escapeHtml($categorie->denumire);?></a>
-      
-<?php endforeach; 
- foreach($atribute as $atribut) :?>
-     <?php echo $this->escapeHtml($atribut->atribut->nume);?></br>
-<?php endforeach; 
+ echo $this->form()->openTag($form);
+ echo $this->formRow($form->get('categorii'));
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ 
+ if(isset($atribute)){
+foreach($atribute as $atribut) :
+     echo $this->escapeHtml($atribut->atribut->nume)."</br>";
+endforeach; 
+ }
+ 
 

@@ -19,7 +19,7 @@ private $name;
    
     public function __construct($name = null) {
         
-        parent::__construct('form');
+        parent::__construct('atributset');
         
          
     }
