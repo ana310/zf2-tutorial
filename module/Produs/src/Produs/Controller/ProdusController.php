@@ -18,6 +18,10 @@ class ProdusController  extends AbstractActionController {
     protected $valoareIntTable;
     protected $valoareVarcharTable;
     
+    /**
+     * tabela produs
+     * @return type
+     */
     public function getProdusTable(){
         
         if(!$this->produsTable) {
@@ -27,7 +31,10 @@ class ProdusController  extends AbstractActionController {
         
         return $this->produsTable;
     }
-    
+    /**
+     * tabela atributset
+     * @return type
+     */
     public function getAtributsetTable() {
         
         if(!$this->atributsetTable){
@@ -36,7 +43,10 @@ class ProdusController  extends AbstractActionController {
         }
         return $this->atributsetTable;
     }
-    
+    /**
+     * tabela atribut
+     * @return type
+     */
     public function getAtributTable() {
         if(!$this->atributTable) {
             $sm = $this->getServiceLocator();
@@ -44,7 +54,10 @@ class ProdusController  extends AbstractActionController {
         }
         return $this->atributTable;
     }
-    
+    /**
+     * tabela atribut_atributset(leaga atribut i atributset)
+     * @return type
+     */
     public function getAtributAtributsetTable() {
         if(!$this->atributAtributsetTable) {
             $sm = $this->getServiceLocator();
@@ -52,7 +65,10 @@ class ProdusController  extends AbstractActionController {
         }
         return $this->atributAtributsetTable;
     }
-    
+    /**
+     * tabela valoriatributeint
+     * @return type
+     */
     public function getValoareIntTable(){
          if(!$this->valoareIntTable) {
             $sm = $this->getServiceLocator();
@@ -60,7 +76,10 @@ class ProdusController  extends AbstractActionController {
         }
         return $this->valoareIntTable;
     }
-    
+    /**
+     * tabela valoriatributetext
+     * @return type
+     */
     public function getValoareVarcharTable(){
          if(!$this->valoareVarcharTable) {
             $sm = $this->getServiceLocator();
@@ -68,16 +87,24 @@ class ProdusController  extends AbstractActionController {
         }
         return $this->valoareVarcharTable;
     }
-    
+    /**
+     * afisare produse --incomplet
+     * @return type
+     */
     public function indexAction() {
         return array('produse' => $this->getProdusTable()->fetchAll(),);
     }
-    
+    /**
+     * introducere produs
+     * @return type
+     */
     public function introducereprodusAction(){
         
          $id = (int) $this->params()->fromRoute('id', 0);
+         
          if (!$id) {
-             $select = new Element\Select('categorii');
+             
+            $select = new Element\Select('categorii');
             $select->setLabel('Selectati categori din care face parte produsul. ');
             
             $categorii = $this->getAtributsetTable()->fetchAll();
@@ -131,6 +158,7 @@ class ProdusController  extends AbstractActionController {
             
            $atribute = $this->getAtributsetTable()->joinAtribut($id);
           
+           //constructia formularului dinamic in functie de atributele declarate
            foreach($atribute as $atribut):
                
                 $nume = $atribut->atribut->nume;
@@ -155,25 +183,29 @@ class ProdusController  extends AbstractActionController {
 
                 $numefield[] = $nume;
             endforeach;
+            
+            //validarea datelor introduse in formular si introducerea lor in baza de date
                 if($request->isPost()){
                    
                     $produsform->setInputFilter($produs->getInputFilter()); 
                     $produsform->setData($request->getPost());
                      
                      if($produsform->isValid()){
+                         
                          $produs->exchangeArray($produsform->getData());
                          $values = $produsform->getData();
                          $atribute = $this->getAtributsetTable()->joinAtribut($id);
                          
+                         //adaugarea in tabela produs
                          $this->getProdusTable()->adaugaProdus($produs,$id);
                          $id_produs = $this->getProdusTable()->getProdusId();
                          
+                         //pentru diecare atribut verific tipul si adaug in valoriatributeint sau valoriatributechar
                          foreach($atribute as $atribut):
                              $nume = $atribut->atribut->nume;
                              $tip = $atribut->atribut->tip;
                              $ida = $atribut->atribut->id;
                             
-                             
                              if($tip == 'number') {
                                  $this->getValoareIntTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
                              } 
@@ -184,23 +216,6 @@ class ProdusController  extends AbstractActionController {
                      }
                     
                 }
-//            if($request->isPost()){
-//               
-//                $produs = new Produs();
-//                $produsform->setInputFilter($produs->getInputFilter());
-//                $produsform->setData($request->getPost());
-//                
-//                
-//                if($produsform->isValid()){
-//                    
-//                   $produs->exchangeArray($produsform->getData());
-//                   echo "<pre>";
-//                  print_r($produs);die;
-//                   $this->getProdusTable()->adaugaProdus($produs);
-//                   return array('produsform' => $produsform, 'numefield' => $numefield,);
-//                }
-//                
-//            }
              return array('produsform' => $produsform, 'numefield' => $numefield,);
      
                }
