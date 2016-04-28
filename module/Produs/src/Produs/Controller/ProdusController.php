@@ -92,7 +92,7 @@ class ProdusController  extends AbstractActionController {
      * @return type
      */
     public function indexAction() {
-        return array('produse' => $this->getProdusTable()->fetchAll(),);
+       return array('produse' => $this->getProdusTable()->fetchAll(),);
     }
     /**
      * introducere produs
@@ -213,12 +213,78 @@ class ProdusController  extends AbstractActionController {
                                  $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
                              }
                          endforeach;
+                         
+                          return $this->redirect()->toRoute('produs', array(
+                            'action' => 'index' ));
                      }
                     
                 }
              return array('produsform' => $produsform, 'numefield' => $numefield,);
      
                }
+    
+    public function afisareproduseAction(){
+         $id = (int) $this->params()->fromRoute('id', 0);
+         
+         if (!$id) {
+             
+            $select = new Element\Select('categorii');
+            $select->setLabel('Selectati categori din care face parte produsul. ');
+            
+            $categorii = $this->getAtributsetTable()->fetchAll();
+            foreach ($categorii as $categorie) {
+               $options[$categorie->id] = $categorie->denumire;
+            }
+             
+            $select->setValueOptions($options);
+            
+            $submit =new Element\Submit('submit');
+            $submit->setAttribute('id', 'introducere');
+            $submit->setValue('Adauga');
+            
+            
+            $form = new Form('categorii');
+            $form->add($select);
+            $form->add($submit);
+         
+            $inputCategorii = new Input('categorii');
+            $inputCategorii->isRequired();
+            
+            $inputFilter = new InputFilter();
+            $inputFilter->add($inputCategorii);
+            
+         
+           $request = $this->getRequest();
+           if(!$request->isPost()){
+               return array('form' => $form); 
+            }
+            
+            $form->setInputFilter($inputFilter);
+            $form->setData($request->getPost());
+               
+           if(!$form->isValid()){
+               return (array('form' => $form));
+               } 
+            $data = $form->getData();
+            $id_categorie = $data['categorii'];
+            
+            return $this->redirect()->toRoute('produs', array(
+                 'action' => 'afisareproduse','id' => $id_categorie,
+             ));
+         }
+         
+        $produse = $this->getProdusTable()->getProdusByAtributset($id);
+        $categorii = $this->getAtributsetTable()->fetchAll();
+        
+        foreach ($categorii as $atributset):
+            $categorie[$atributset->id] = $atributset->denumire;
+        endforeach;
+       
+        $atribute = $this->getAtributsetTable()->joinAtribut($id);
+        
+        return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute);
+       
+    }
                 
       
 }       

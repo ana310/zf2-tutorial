@@ -35,5 +35,13 @@ class ProdusTable {
     public function getProdusId(){
         return $this->tableGateway->getLastInsertValue();
     }
+    
+    public function getProdusByAtributset($id) {
+        
+        $where = array('id_atributset' => $id);
+        $resultSet = $this->tableGateway->select($where);
+        
+        return $resultSet;
+    }
    
 }

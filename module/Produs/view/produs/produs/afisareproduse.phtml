@@ -2,6 +2,18 @@
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+if(isset($form)){   
+    
+ $form->prepare();
+ echo $this->form()->openTag($form);
+ echo $this->formRow($form->get('categorii'));
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ 
+}
+if(isset($produse)) {
+?>
 <table class="table">
     <tr>
         <th>Denumire</th>
@@ -9,19 +21,20 @@ $this->headTitle($title);
         <th>Descriere</th>
         <th>Categorie</th>
         <th>Status</th>
+<?php foreach ($atribute as $atribut):?>
+        <th><?php echo ucfirst($this->escapeHtml($atribut->atribut->nume));?></th>
+<?php endforeach; ?>
     </tr>
 <?php foreach( $produse as $produs) : ?>
     <tr>
         <td><?php echo $this->escapeHtml($produs->denumire);?></td>
         <td><?php echo $this->escapeHtml($produs->brand);?></td>
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>
-        <td><?php echo $this->escapeHtml($produs->idatributset);?></td>
-        <td><?php echo $this->escapeHtml($produs->status);?></td>
-        
+        <td><?php echo $this->escapeHtml($categorie[$produs->idatributset]);?></td>
+        <td><?php echo $this->escapeHtml($produs->status);?></td> 
     </tr>
 <?php endforeach; ?>
-    
-    
 </table>
-
-
+<?php
+}
+?>
