@@ -11,7 +11,7 @@ return array(
         
         'Application',
         'Produs',
-       // 'ZfSnapPhpDebugBar',
+      //'ZfSnapPhpDebugBar',
         'Album',
         'Admin',
         'Customer',

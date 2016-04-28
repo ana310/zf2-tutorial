@@ -3,6 +3,8 @@
 namespace Produs\Model;
 
 use Zend\Db\TableGateway\TableGateway;
+use Produs\Model\AtributsetTable;
+use Zend\Db\Sql\Select;
 
 class ProdusTable {
     
@@ -16,4 +18,22 @@ class ProdusTable {
         $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
+    
+    public function adaugaProdus(Produs $produs, $id){
+         $data = array(
+            'status' => 'disponibil',
+            'denumire' => $produs->denumire,
+            'brand' => $produs->brand,
+            'descriere' => $produs->descriere,
+       );
+         
+         $data['id_atributset'] = $id;    
+         $this->tableGateway->insert($data);
+        
+    }
+    
+    public function getProdusId(){
+        return $this->tableGateway->getLastInsertValue();
+    }
+   
 }

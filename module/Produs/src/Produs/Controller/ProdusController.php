@@ -6,6 +6,8 @@ use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
+use Produs\Form\ProdusForm;
+use Produs\Model\Produs;
 
 class ProdusController  extends AbstractActionController {
     
@@ -13,6 +15,8 @@ class ProdusController  extends AbstractActionController {
     protected $atributsetTable;
     protected $atributTable;
     protected $atributAtributsetTable;
+    protected $valoareIntTable;
+    protected $valoareVarcharTable;
     
     public function getProdusTable(){
         
@@ -49,18 +53,36 @@ class ProdusController  extends AbstractActionController {
         return $this->atributAtributsetTable;
     }
     
+    public function getValoareIntTable(){
+         if(!$this->valoareIntTable) {
+            $sm = $this->getServiceLocator();
+            $this->valoareIntTable = $sm->get('Produs\Model\ValoareIntTable');
+        }
+        return $this->valoareIntTable;
+    }
+    
+    public function getValoareVarcharTable(){
+         if(!$this->valoareVarcharTable) {
+            $sm = $this->getServiceLocator();
+            $this->valoareVarcharTable = $sm->get('Produs\Model\ValoareVarcharTable');
+        }
+        return $this->valoareVarcharTable;
+    }
+    
     public function indexAction() {
         return array('produse' => $this->getProdusTable()->fetchAll(),);
     }
     
     public function introducereprodusAction(){
         
-            $select = new Element\Select('categorii');
+         $id = (int) $this->params()->fromRoute('id', 0);
+         if (!$id) {
+             $select = new Element\Select('categorii');
             $select->setLabel('Selectati categori din care face parte produsul. ');
             
             $categorii = $this->getAtributsetTable()->fetchAll();
             foreach ($categorii as $categorie) {
-               $options[$categorie->denumire] = $categorie->denumire;
+               $options[$categorie->id] = $categorie->denumire;
             }
              
             $select->setValueOptions($options);
@@ -82,31 +104,107 @@ class ProdusController  extends AbstractActionController {
             
          
            $request = $this->getRequest();
-           if($request->isPost()){
+           if(!$request->isPost()){
+               return array('form' => $form); 
+            }
+            
+            $form->setInputFilter($inputFilter);
+            $form->setData($request->getPost());
                
-               $form->setInputFilter($inputFilter);
-               $form->setData($request->getPost());
+           if(!$form->isValid()){
+               return (array('form' => $form));
+               } 
+            $data = $form->getData();
+            $id_categorie = $data['categorii'];
+            
+            return $this->redirect()->toRoute('produs', array(
+                 'action' => 'introducereprodus','id' => $id_categorie,
+             ));
+         }
+           
+           $request = $this->getRequest();
+           $produsform = new ProdusForm();
+           $produsform->get('submit')->setValue('Insert');
+           
+           $produs = new Produs();
+           $inputFilter = $produs->getInputFilter();
+            
+           $atribute = $this->getAtributsetTable()->joinAtribut($id);
+          
+           foreach($atribute as $atribut):
                
-               if($form->isValid()){
+                $nume = $atribut->atribut->nume;
+                $tip = $atribut->atribut->tip;
+                if($atribut->atribut->required == 1){
+                    $required = 'true' ;
+                } else {
+                    $required = 'false';
+                }
+                
+                
+                $element = new Element\Text($nume);
+                $element ->setLabel(ucfirst($nume));
+                $element ->setAttributes(array( 'type' => $tip, 'required' => $required));
+                
+                $produsform->add($element);
+                
+                $inputElement = new Input($nume);
+                $inputElement->isRequired();
+                
+                $inputFilter->add($inputElement);
+
+                $numefield[] = $nume;
+            endforeach;
+                if($request->isPost()){
                    
-                  $data = $form->getData();
-                  $categorie = $data['categorii'];
-                  
-                  $atributset = $this->getAtributsetTable()->getAtributsetByName($categorie);
-                 
-                  if($atributset->denumire == $categorie){
-                        $id_categorie = $atributset->id;
-                      }
-                  }
-                   return array('form' => $form, 'atribute' => $this->getAtributsetTable()->joinAtribut($id_categorie)); 
-                   
-               } else {
-                   return (array('form' => $form));
-               }  
-               
-           }      
-             
-    }
+                    $produsform->setInputFilter($produs->getInputFilter()); 
+                    $produsform->setData($request->getPost());
+                     
+                     if($produsform->isValid()){
+                         $produs->exchangeArray($produsform->getData());
+                         $values = $produsform->getData();
+                         $atribute = $this->getAtributsetTable()->joinAtribut($id);
+                         
+                         $this->getProdusTable()->adaugaProdus($produs,$id);
+                         $id_produs = $this->getProdusTable()->getProdusId();
+                         
+                         foreach($atribute as $atribut):
+                             $nume = $atribut->atribut->nume;
+                             $tip = $atribut->atribut->tip;
+                             $ida = $atribut->atribut->id;
+                            
+                             
+                             if($tip == 'number') {
+                                 $this->getValoareIntTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+                             } 
+                             if($tip == 'text') {
+                                 $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+                             }
+                         endforeach;
+                     }
+                    
+                }
+//            if($request->isPost()){
+//               
+//                $produs = new Produs();
+//                $produsform->setInputFilter($produs->getInputFilter());
+//                $produsform->setData($request->getPost());
+//                
+//                
+//                if($produsform->isValid()){
+//                    
+//                   $produs->exchangeArray($produsform->getData());
+//                   echo "<pre>";
+//                  print_r($produs);die;
+//                   $this->getProdusTable()->adaugaProdus($produs);
+//                   return array('produsform' => $produsform, 'numefield' => $numefield,);
+//                }
+//                
+//            }
+             return array('produsform' => $produsform, 'numefield' => $numefield,);
+     
+               }
+                
       
-        
+}       
 

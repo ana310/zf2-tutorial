@@ -17,8 +17,13 @@ use Produs\Model\Atribut;
 use Produs\Model\AtributTable;
 use Produs\Model\AtributAtributsetTable;
 use Produs\Model\AtributAtributset;
+use Produs\Model\ValoareInt;
+use Produs\Model\ValoareIntTable;
+use Produs\Model\ValoareVarchar;
+use Produs\Model\ValoareVarcharTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+
 /**
  * Description of Module
  *
@@ -92,6 +97,28 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface{
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new AtributAtributset());
                     return new TableGateway('atribut_atributset', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\ValoareIntTable' => function($sm) {
+                    $tableGateway = $sm->get('ValoareIntTableGateway');
+                    $table = new ValoareIntTable($tableGateway);
+                    return $table;
+                },
+                'ValoareIntTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new ValoareInt());
+                    return new TableGateway('valoriatributeint', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\ValoareVarcharTable' => function($sm) {
+                    $tableGateway = $sm->get('ValoareVarcharTableGateway');
+                    $table = new ValoareVarcharTable($tableGateway);
+                    return $table;
+                },
+                'ValoareVarcharTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new ValoareVarchar());
+                    return new TableGateway('valoriatributetext', $dbAdapter, null, $resultSetPrototype);
                 },
              ),
         );

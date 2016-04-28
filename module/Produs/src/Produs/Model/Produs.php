@@ -12,7 +12,9 @@ class Produs implements InputFilterAwareInterface {
     public $id;
     public $idatributset;
     public $status;
-    
+    public $denumire;
+    public $brand;
+    public $descriere;
     /**
      * 
      * @param type $data
@@ -21,6 +23,9 @@ class Produs implements InputFilterAwareInterface {
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
         $this->idatributset = (!empty($data['id_atributset'])) ? $data['id_atributset'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : null;
+        $this->denumire = (!empty($data['denumire'])) ? $data['denumire'] : null;
+        $this->brand = (!empty($data['brand'])) ? $data['brand'] : null;
+        $this->descriere = (!empty($data['descriere'])) ? $data['descriere'] : null;
     } 
     /**
      * used for bind
@@ -37,9 +42,62 @@ class Produs implements InputFilterAwareInterface {
         
         if(!$this->inputFilter) {
             
-            $inputFilter = new InputFilter();
+            $inputFilter = new InputFilter(); 
             
-       
+            $inputFilter->add(array(
+                         'name'     => 'denumire',
+                         'required' => true,
+                         'filters'  => array(
+                             array('name' => 'StripTags'),
+                             array('name' => 'StringTrim'),
+                         ),
+                         'validators' => array(
+                             array(
+                                 'name'    => 'StringLength',
+                                 'options' => array(
+                                     'encoding' => 'UTF-8',
+                                     'min'      => 3,
+                                     'max'      => 20,
+                                 ),
+                             ),
+                         ),
+            ));
+            $inputFilter->add(array(
+                         'name'     => 'brand',
+                         'required' => true,
+                         'filters'  => array(
+                             array('name' => 'StripTags'),
+                             array('name' => 'StringTrim'),
+                         ),
+                         'validators' => array(
+                             array(
+                                 'name'    => 'StringLength',
+                                 'options' => array(
+                                     'encoding' => 'UTF-8',
+                                     'min'      => 3,
+                                     'max'      => 20,
+                                 ),
+                             ),
+                         ),
+             ));
+            $inputFilter->add(array(
+                         'name'     => 'descriere',
+                         'required' => true,
+                         'filters'  => array(
+                             array('name' => 'StripTags'),
+                             array('name' => 'StringTrim'),
+                         ),
+                         'validators' => array(
+                             array(
+                                 'name'    => 'StringLength',
+                                 'options' => array(
+                                     'encoding' => 'UTF-8',
+                                     'min'      => 3,
+                                 ),
+                             ),
+                         ),
+            ));
+          $this->inputFilter = $inputFilter;  
         }
         return $this->inputFilter;
     }
