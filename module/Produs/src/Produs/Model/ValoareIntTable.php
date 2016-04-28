@@ -9,14 +9,14 @@
 namespace Produs\Model;
 
 /**
- * Description of AtributsetTable
+ * Description of ValoareIntTable
  *
  * @author Mee
  */
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 
-class AtributsetTable {
+class ValoareIntTable {
     
     public $tableGateway;
     
@@ -29,14 +29,14 @@ class AtributsetTable {
         return $resultSet;
     }
     
-    public function joinAtribut($id){
-         $resultSet = $this->tableGateway->select(function (Select $select) use($id) {
-                $select->join(array('aa' => 'atribut_atributset'),'atributset.id = aa.id_atributset');
-                $select->join(array('a' => 'atribut'),'aa.id_atribut = a.id');
-                $where = array('atributset.id' => $id);
-                $select->where($where);
-            });  
-       return $resultSet;
+    public function adaugaProdus($id_produs, $id_atribut, $value) {
+       $data = array(
+            'id_produs' => $id_produs,
+            'id_atribut' => $id_atribut,
+            'valoare' => $value,
+       );
         
+        $this->tableGateway->insert($data);  
     }
+    
 }
