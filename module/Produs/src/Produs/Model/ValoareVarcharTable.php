@@ -39,4 +39,11 @@ class ValoareVarcharTable {
         $this->tableGateway->insert($data);
     }
     
+    public function getValue($idp,$ida){
+        $where = (array('id_produs' => $idp, 'id_atribut' => $ida));
+       $resultSet = $this->tableGateway->select($where);
+      
+       return $resultSet;
+    }
+    
 }

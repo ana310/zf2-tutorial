@@ -36,7 +36,17 @@ class AtributsetTable {
                 $where = array('atributset.id' => $id);
                 $select->where($where);
             });  
-       return $resultSet;
+       return $resultSet;  
+    }
+    
+    public function getNumeById($id) {
+        
+        $resultSet = $this->tableGateway->select(function (Select $select) use ($id) {
+            $select->columns(array('denumire'));
+            $where = array('id' => $id);
+            $select->where($where);
+        });
+        return $resultSet;
         
     }
 }

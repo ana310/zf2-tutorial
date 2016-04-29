@@ -4,15 +4,24 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <table class="table">
     <tr>
+        <th>Denumire</th>
+        <th>Brand</th>
+        <th>Descriere</th>
         <th>Categorie</th>
         <th>Status</th>
     </tr>
 <?php foreach( $produse as $produs) : ?>
     <tr>
+        <td><?php echo $this->escapeHtml($produs->denumire);?></td>
+        <td><?php echo $this->escapeHtml($produs->brand);?></td>
+        <td><?php echo $this->escapeHtml($produs->descriere);?></td>
         <td><?php echo $this->escapeHtml($produs->idatributset);?></td>
         <td><?php echo $this->escapeHtml($produs->status);?></td>
+        
     </tr>
 <?php endforeach; ?>
+    
+    
 </table>
 
 

@@ -92,7 +92,7 @@ class ProdusController  extends AbstractActionController {
      * @return type
      */
     public function indexAction() {
-        return array('produse' => $this->getProdusTable()->fetchAll(),);
+       return array('produse' => $this->getProdusTable()->fetchAll(),);
     }
     /**
      * introducere produs
@@ -213,12 +213,99 @@ class ProdusController  extends AbstractActionController {
                                  $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
                              }
                          endforeach;
+                         
+                          return $this->redirect()->toRoute('produs', array(
+                            'action' => 'index' ));
                      }
                     
                 }
              return array('produsform' => $produsform, 'numefield' => $numefield,);
      
                }
+    
+    public function afisareproduseAction(){
+         $idcat = (int) $this->params()->fromRoute('id', 0);
+         
+         if (!$idcat) {
+             
+            $select = new Element\Select('categorii');
+            $select->setLabel('Selectati categori din care face parte produsul. ');
+            
+            $categorii = $this->getAtributsetTable()->fetchAll();
+            foreach ($categorii as $categorie) {
+               $options[$categorie->id] = $categorie->denumire;
+            }
+             
+            $select->setValueOptions($options);
+            
+            $submit =new Element\Submit('submit');
+            $submit->setAttribute('id', 'introducere');
+            $submit->setValue('Adauga');
+            
+            
+            $form = new Form('categorii');
+            $form->add($select);
+            $form->add($submit);
+         
+            $inputCategorii = new Input('categorii');
+            $inputCategorii->isRequired();
+            
+            $inputFilter = new InputFilter();
+            $inputFilter->add($inputCategorii);
+            
+         
+           $request = $this->getRequest();
+           if(!$request->isPost()){
+               return array('form' => $form); 
+            }
+            
+            $form->setInputFilter($inputFilter);
+            $form->setData($request->getPost());
+               
+           if(!$form->isValid()){
+               return (array('form' => $form));
+               } 
+            $data = $form->getData();
+            $id_categorie = $data['categorii'];
+            
+            return $this->redirect()->toRoute('produs', array(
+                 'action' => 'afisareproduse','id' => $id_categorie,
+             ));
+         }
+         
+        $produse = $this->getProdusTable()->getProdusByAtributset($idcat);
+       
+        
+        foreach($produse as $produs):
+           
+         $atribute = $this->getAtributsetTable()->joinAtribut($idcat);
+            foreach($atribute as $atribut):
+                
+                if($atribut->atribut->tip == 'number'){
+                    $result = $this->getValoareIntTable()->getValue($produs->id,$atribut->id);
+                }
+                if($atribut->atribut->tip == 'text') {
+                    $result = $this->getValoareVarcharTable()->getValue($produs->id,$atribut->id);
+                }
+                foreach($result as $res):
+                    $atributes[] = [$res->id_produs=>[$res->id_atribut => $res->valoare]];
+                endforeach;
+                
+            endforeach; 
+        endforeach;
+        
+        $categorii = $this->getAtributsetTable()->fetchAll();
+        
+        foreach ($categorii as $atributset):
+            $categorie[$atributset->id] = $atributset->denumire;
+        endforeach;
+        $produse = $this->getProdusTable()->getProdusByAtributset($idcat);
+          $atribute = $this->getAtributsetTable()->joinAtribut($idcat);
+//        $produs = $this->getProdusTable()->joinProdusAtributInt(16);
+        
+       return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes);
+       
+    }
                 
       
 }       

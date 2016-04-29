@@ -35,5 +35,36 @@ class ProdusTable {
     public function getProdusId(){
         return $this->tableGateway->getLastInsertValue();
     }
+    
+    public function getProdusByAtributset($id) {
+        
+        $where = array('id_atributset' => $id);
+        $resultSet = $this->tableGateway->select($where);
+        
+        return $resultSet;
+    }
+    
+    public function getProdusById($id){
+        $where = array('id' => $id);
+        $resultSet = $this->tableGateway->select($where);
+        
+        return $resultSet;
+    }
    
+//    public function joinProdusAtributInt($id,$tip){
+//        $resultSet = $this->tableGateway->select(function (Select $select) use($id,$tip){
+//            if($tip == 'text'){
+//                $select->join(array('vat' => 'valoriatributetext'),'produs.id = vat.id_produs');
+//                $select->join(array('a' => 'atribut'),'vat.id_atribut = a.id');
+//            }
+//            if($tip == 'number'){
+//               $select->join(array('vai' => 'valoriatributeint'),'produs.id = vai.id_produs'); 
+//               $select->join(array('a' => 'atribut'),'vai.id_atribut = a.id');
+//            }
+//            
+//            $where = array('produs.id' => $id);
+//            $select->where($where);
+//        });
+//        return $resultSet;
+//    }
 }

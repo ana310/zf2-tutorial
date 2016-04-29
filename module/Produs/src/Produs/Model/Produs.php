@@ -5,6 +5,7 @@ namespace Produs\Model;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Produs\Model\Atribut;
 
 class Produs implements InputFilterAwareInterface {
     
