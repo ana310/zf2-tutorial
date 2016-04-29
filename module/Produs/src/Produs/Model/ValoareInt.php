@@ -30,9 +30,9 @@ class ValoareInt implements InputFilterAwareInterface{
     public function exchangeArray($data){
     
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
-        $this->nume = (!empty($data['id_atribut'])) ? $data['id_atribut'] : null;
-        $this->tip = (!empty($data['id_produs'])) ? $data['id_produs'] : null;
-        $this->required = (!empty($data['valoare'])) ? $data['valoare'] : null;
+        $this->id_atribut = (!empty($data['id_atribut'])) ? $data['id_atribut'] : null;
+        $this->id_produs = (!empty($data['id_produs'])) ? $data['id_produs'] : null;
+        $this->valoare = (!empty($data['valoare'])) ? $data['valoare'] : null;
     }
     
     public function getInputFilter() {

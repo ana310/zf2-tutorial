@@ -224,9 +224,9 @@ class ProdusController  extends AbstractActionController {
                }
     
     public function afisareproduseAction(){
-         $id = (int) $this->params()->fromRoute('id', 0);
+         $idcat = (int) $this->params()->fromRoute('id', 0);
          
-         if (!$id) {
+         if (!$idcat) {
              
             $select = new Element\Select('categorii');
             $select->setLabel('Selectati categori din care face parte produsul. ');
@@ -273,16 +273,37 @@ class ProdusController  extends AbstractActionController {
              ));
          }
          
-        $produse = $this->getProdusTable()->getProdusByAtributset($id);
+        $produse = $this->getProdusTable()->getProdusByAtributset($idcat);
+       
+        
+        foreach($produse as $produs):
+           
+         $atribute = $this->getAtributsetTable()->joinAtribut($idcat);
+            foreach($atribute as $atribut):
+                
+                if($atribut->atribut->tip == 'number'){
+                    $result = $this->getValoareIntTable()->getValue($produs->id,$atribut->id);
+                }
+                if($atribut->atribut->tip == 'text') {
+                    $result = $this->getValoareVarcharTable()->getValue($produs->id,$atribut->id);
+                }
+                foreach($result as $res):
+                    $atributes[] = [$res->id_produs=>[$res->id_atribut => $res->valoare]];
+                endforeach;
+                
+            endforeach; 
+        endforeach;
+        
         $categorii = $this->getAtributsetTable()->fetchAll();
         
         foreach ($categorii as $atributset):
             $categorie[$atributset->id] = $atributset->denumire;
         endforeach;
-       
-        $atribute = $this->getAtributsetTable()->joinAtribut($id);
+        $produse = $this->getProdusTable()->getProdusByAtributset($idcat);
+          $atribute = $this->getAtributsetTable()->joinAtribut($idcat);
+//        $produs = $this->getProdusTable()->joinProdusAtributInt(16);
         
-        return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute);
+       return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes);
        
     }
                 

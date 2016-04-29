@@ -16,25 +16,40 @@ if(isset($produse)) {
 ?>
 <table class="table">
     <tr>
+        <th></th>
         <th>Denumire</th>
         <th>Brand</th>
         <th>Descriere</th>
         <th>Categorie</th>
         <th>Status</th>
-<?php foreach ($atribute as $atribut):?>
-        <th><?php echo ucfirst($this->escapeHtml($atribut->atribut->nume));?></th>
-<?php endforeach; ?>
+<?php foreach ($atribute as $atribut){?>
+        <th><?php echo ucfirst($this->escapeHtml($atribut->atribut->nume)); $idatribut[] = $atribut->atribut->id;?></th>
+<?php } ?>
     </tr>
 <?php foreach( $produse as $produs) : ?>
     <tr>
+        <td><?php echo $this->escapeHtml($produs->id);?></td>
         <td><?php echo $this->escapeHtml($produs->denumire);?></td>
         <td><?php echo $this->escapeHtml($produs->brand);?></td>
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>
         <td><?php echo $this->escapeHtml($categorie[$produs->idatributset]);?></td>
         <td><?php echo $this->escapeHtml($produs->status);?></td> 
+        <?php foreach ($idatribut as $ida):?>
+        <td>
+            
+           <?php 
+                foreach ($atributes as $a):
+                    if(isset($a[$produs->id][$ida])){
+                        print_r($a[$produs->id][$ida]) ;
+                    } 
+               endforeach;  
+           ?> 
+        </td>
+        <?php endforeach; ?>
     </tr>
 <?php endforeach; ?>
+
 </table>
 <?php
 }
-?>
+
