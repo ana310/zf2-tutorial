@@ -6,6 +6,8 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Produs\Model\Atribut;
+use Zend\Validator\Regex;
+use Zend\I18n\Validator\IsFloat;
 
 class Produs implements InputFilterAwareInterface {
     
@@ -75,7 +77,7 @@ class Produs implements InputFilterAwareInterface {
                                  'name'    => 'StringLength',
                                  'options' => array(
                                      'encoding' => 'UTF-8',
-                                     'min'      => 3,
+                                     'min'      => 1,
                                      'max'      => 20,
                                  ),
                              ),
@@ -97,6 +99,47 @@ class Produs implements InputFilterAwareInterface {
                                  ),
                              ),
                          ),
+            ));
+             $inputFilter->add(array(
+                         'name'     => 'pret',
+                         'required' => true,
+                         'filters'  => array(
+                             array('name' => 'StripTags'),
+                             array('name' => 'StringTrim'),
+                         ),
+                         'validators' => array(
+                             array(
+                                 'name' => 'IsFloat',
+                             ),
+                         ),
+            ));
+            $inputFilter->add(array(
+                         'name'     => 'pretspecial',
+                         'required' => true,
+                         'filters'  => array(
+                             array('name' => 'StripTags'),
+                             array('name' => 'StringTrim'),
+                         ),
+                         'validators' => array(
+                             array(
+                                 'name' => 'IsFloat',
+                             ),
+                         ),
+            ));
+            $inputFilter->add(array(
+                         'name'     => 'data_inceput',
+                         'required' => false,
+                         
+            ));
+            $inputFilter->add(array(
+                         'name'     => 'data_sfarsit',
+                         'required' => false,
+                         
+            ));
+             $inputFilter->add(array(
+                         'name'     => 'stoc',
+                         'required' => true,
+                         
             ));
           $this->inputFilter = $inputFilter;  
         }

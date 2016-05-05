@@ -41,6 +41,41 @@ class ProdusForm extends Form {
             ),
         ));
         $this->add(array(
+            'name' => 'pret',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Pret: ',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'pretspecial',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Pret special: ',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'data_inceput',
+            'type' => 'date',
+            'options' => array(
+                'label' => 'Data start: ',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'data_sfarsit',
+            'type' => 'date',
+            'options' => array(
+                'label' => 'Data sfarsit: ',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'stoc',
+            'type' => 'Number',
+            'options' => array(
+                'label' => 'Stoc: ',
+            ),
+        ));
+        $this->add(array(
             'name' => 'submit',
             'type' =>'submit',
             'atributes' => array(

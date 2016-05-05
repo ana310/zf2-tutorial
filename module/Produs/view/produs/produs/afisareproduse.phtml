@@ -22,6 +22,8 @@ if(isset($produse)) {
         <th>Descriere</th>
         <th>Categorie</th>
         <th>Status</th>
+        <th>Pret</th>
+        <th>Stoc</th>
 <?php foreach ($atribute as $atribut){?>
         <th><?php echo ucfirst($this->escapeHtml($atribut->atribut->nume)); $idatribut[] = $atribut->atribut->id;?></th>
 <?php } ?>
@@ -34,6 +36,8 @@ if(isset($produse)) {
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>
         <td><?php echo $this->escapeHtml($categorie[$produs->idatributset]);?></td>
         <td><?php echo $this->escapeHtml($produs->status);?></td> 
+        <td><?php  echo $preturi[$produs->id]; ?> </td>
+        <td><?php  echo $stoc[$produs->id]; ?></td>
         <?php foreach ($idatribut as $ida):?>
         <td>
             
@@ -46,6 +50,7 @@ if(isset($produse)) {
            ?> 
         </td>
         <?php endforeach; ?>
+        
     </tr>
 <?php endforeach; ?>
 

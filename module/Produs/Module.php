@@ -21,6 +21,14 @@ use Produs\Model\ValoareInt;
 use Produs\Model\ValoareIntTable;
 use Produs\Model\ValoareVarchar;
 use Produs\Model\ValoareVarcharTable;
+use Produs\Model\PretTable;
+use Produs\Model\Pret;
+use Produs\Model\Stoc;
+use Produs\Model\StocTable;
+use Produs\Model\Categorie;
+use Produs\Model\CategorieTable;
+use Produs\Model\Tva;
+use Produs\Model\TvaTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -119,6 +127,50 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface{
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new ValoareVarchar());
                     return new TableGateway('valoriatributetext', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\PretTable' => function($sm) {
+                    $tableGateway = $sm->get('PretTableGateway');
+                    $table = new PretTable($tableGateway);
+                    return $table;
+                },
+                'PretTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Pret());
+                    return new TableGateway('pret', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\StocTable' => function($sm) {
+                    $tableGateway = $sm->get('StocTableGateway');
+                    $table = new StocTable($tableGateway);
+                    return $table;
+                },
+                'StocTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Stoc());
+                    return new TableGateway('stoc', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\CategorieTable' => function($sm) {
+                    $tableGateway = $sm->get('CategorieTableGateway');
+                    $table = new CategorieTable($tableGateway);
+                    return $table;
+                },
+                'CategorieTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Categorie());
+                    return new TableGateway('categorie', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Produs\Model\TvaTable' => function($sm) {
+                    $tableGateway = $sm->get('TvaTableGateway');
+                    $table = new TvaTable($tableGateway);
+                    return $table;
+                },
+                'TvaTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Tva());
+                    return new TableGateway('tva', $dbAdapter, null, $resultSetPrototype);
                 },
              ),
         );

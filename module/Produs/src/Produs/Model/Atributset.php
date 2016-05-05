@@ -23,6 +23,7 @@ class Atributset implements InputFilterAwareInterface {
     public $id;
     public $denumire;
     public $atribut;
+    public $id_categorie;
     protected $inputfilter;
     
     public function exchangeArray($data){
@@ -31,6 +32,7 @@ class Atributset implements InputFilterAwareInterface {
         $this->denumire = (!empty($data['denumire'])) ? $data['denumire'] : null;
         $this->atribut = new Atribut();
         $this->atribut->exchangeArray($data);
+        $this->id_categorie = (!empty($data['id_categorie'])) ? $data['id_categorie'] : null;
     }
     
     public function getInputFilter() {

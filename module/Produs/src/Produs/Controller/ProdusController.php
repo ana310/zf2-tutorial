@@ -8,6 +8,8 @@ use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Produs\Form\ProdusForm;
 use Produs\Model\Produs;
+use Produs\Model\Pret;
+use Produs\Model\Stoc;
 
 class ProdusController  extends AbstractActionController {
     
@@ -17,7 +19,12 @@ class ProdusController  extends AbstractActionController {
     protected $atributAtributsetTable;
     protected $valoareIntTable;
     protected $valoareVarcharTable;
-    
+    protected $pretTable;
+    protected $stocTable;
+    protected $tvaTable;
+    protected $categorieTable;
+
+
     /**
      * tabela produs
      * @return type
@@ -88,6 +95,46 @@ class ProdusController  extends AbstractActionController {
         return $this->valoareVarcharTable;
     }
     /**
+     * tabela pret
+     */
+    public function getPretTable(){
+        if(!$this->pretTable) {
+            $sm = $this->getServiceLocator();
+            $this->pretTable = $sm->get('Produs\Model\PretTable');
+        }
+        return $this->pretTable;
+    }
+    /**
+     * tabela stoc
+     */
+    public function getStocTable(){
+        if(!$this->stocTable) {
+            $sm = $this->getServiceLocator();
+            $this->stocTable = $sm->get('Produs\Model\StocTable');
+        }
+        return $this->stocTable;
+    }
+     /**
+     * tabela tva
+     */
+    public function getTvaTable(){
+        if(!$this->tvaTable) {
+            $sm = $this->getServiceLocator();
+            $this->tvaTable = $sm->get('Produs\Model\TvaTable');
+        }
+        return $this->tvaTable;
+    }
+    /**
+     * tabela tva
+     */
+    public function getCategorieTable(){
+        if(!$this->categorieTable) {
+            $sm = $this->getServiceLocator();
+            $this->categorieTable = $sm->get('Produs\Model\CategorieTable');
+        }
+        return $this->categorieTable;
+    }
+    /**
      * afisare produse --incomplet
      * @return type
      */
@@ -148,6 +195,17 @@ class ProdusController  extends AbstractActionController {
                  'action' => 'introducereprodus','id' => $id_categorie,
              ));
          }
+         
+           $idcategorie = $this->getCategorieTable()->joinAtributset($id);
+           foreach ($idcategorie as $idcat):
+               $idtva = $idcat->id_tva;
+           endforeach;
+         
+           $tva = $this->getTvaTable()->joinCategorie($idtva);
+           foreach($tva as $t):
+              $valoaretva = $t->valoare;
+           endforeach;
+          
            
            $request = $this->getRequest();
            $produsform = new ProdusForm();
@@ -191,7 +249,7 @@ class ProdusController  extends AbstractActionController {
                     $produsform->setData($request->getPost());
                      
                      if($produsform->isValid()){
-                         
+                    
                          $produs->exchangeArray($produsform->getData());
                          $values = $produsform->getData();
                          $atribute = $this->getAtributsetTable()->joinAtribut($id);
@@ -208,12 +266,23 @@ class ProdusController  extends AbstractActionController {
                             
                              if($tip == 'number') {
                                  $this->getValoareIntTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+                                 
                              } 
                              if($tip == 'text') {
                                  $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+                                
                              }
                          endforeach;
                          
+                         $pret = new Pret();
+                         $pret->exchangeArray($produsform->getData());
+                         
+                         $this->getPretTable()->adaugaProdus($pret, $id_produs, $valoaretva);
+                         
+                         $stoc = new Stoc();
+                         $stoc->exchangeArray($produsform->getData());
+                         $this->getStocTable()->adaugaProdus($stoc, $id_produs);
+                       
                           return $this->redirect()->toRoute('produs', array(
                             'action' => 'index' ));
                      }
@@ -299,11 +368,33 @@ class ProdusController  extends AbstractActionController {
         foreach ($categorii as $atributset):
             $categorie[$atributset->id] = $atributset->denumire;
         endforeach;
+        
+        
         $produse = $this->getProdusTable()->getProdusByAtributset($idcat);
           $atribute = $this->getAtributsetTable()->joinAtribut($idcat);
 //        $produs = $this->getProdusTable()->joinProdusAtributInt(16);
         
-       return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes);
+        
+         $preturi =  $this->getPretTable()->fetchAll();
+         $today = date("Y-m-d");
+         foreach ($preturi as $p):
+            $data_inceput = $p->data_inceput;
+            $data_sfarsit = $p->data_sfarsit;
+            if($data_inceput < $today && $today<$data_sfarsit){
+                $pret[$p->id_produs] = $p->pretspecialcutva;
+            } else {
+             $pret[$p->id_produs] = $p->pretcutva;
+            }
+         endforeach;
+         
+         
+         $stocuri = $this->getStocTable()->fetchAll();
+         foreach ($stocuri as $s):
+             $stoc[$s->id_produs] = $s->stoc;
+         endforeach;
+         
+       return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes,
+           'preturi'=>$pret, 'stoc'=>$stoc);
        
     }
                 
