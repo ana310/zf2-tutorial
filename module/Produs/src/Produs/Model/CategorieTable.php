@@ -14,6 +14,7 @@ namespace Produs\Model;
  * @author Mee
  */
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Sql\Select;
 
 class CategorieTable {
    
@@ -25,6 +26,17 @@ class CategorieTable {
     
     public function fetchAll(){
         $resultSet = $this->tableGateway->select();
+        return $resultSet;
+    }
+    
+    public function joinAtributset($id){
+      
+        $resultSet = $this->tableGateway->select(function(Select $select) use ($id){
+            $select->join(array('a' => 'atributset'),'categorie.id = a.id_categorie',array('idatributset'=>'denumire'));
+            $where = array('a.id'=> $id);
+            $select->where($where);
+        });
+        
         return $resultSet;
     }
     

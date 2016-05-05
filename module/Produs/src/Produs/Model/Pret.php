@@ -23,6 +23,7 @@ class Pret implements InputFilterAwareInterface{
     public $id;
     public $pret;
     public $pretspecial;
+    public $pretspecialcutva;
     public $pretcutva;
     public $data_inceput;
     public $data_sfarsit;
@@ -32,6 +33,7 @@ class Pret implements InputFilterAwareInterface{
          $this->id = (!empty($data['id'])) ? $data['id'] : null;
          $this->pret = (!empty($data['pret'])) ? $data['pret'] : null;
          $this->pretspecial = (!empty($data['pretspecial'])) ? $data['pretspecial'] : null;
+         $this->pretspecialcutva = (!empty($data['pretspecialcutva'])) ? $data['pretspecialcutva'] : null;
          $this->pretcutva = (!empty($data['pretcutva'])) ? $data['pretcutva'] : null;
          $this->data_inceput = (!empty($data['data_inceput'])) ? $data['data_inceput'] : null;
          $this->data_sfarsit = (!empty($data['data_sfarsit'])) ? $data['data_sfarsit'] : null;
@@ -39,8 +41,17 @@ class Pret implements InputFilterAwareInterface{
     }
 
     public function getInputFilter() {
-        return $inputFilter;
+        
+        if(!$this->inputFilter) {
+            
+            $inputFilter = new InputFilter(); 
+            
+           
+          $this->inputFilter = $inputFilter;  
+        }
+        return $this->inputFilter;
     }
+    
 
     public function setInputFilter(InputFilterInterface $inputFilter) {
         return "Nu s-a setat";

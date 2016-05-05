@@ -27,4 +27,12 @@ class StocTable {
         $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
+    
+    public function adaugaProdus($stoc, $id) {
+        $data = array(
+            'id_produs' => $id,
+            'stoc' =>$stoc->stoc,
+        );
+        $this->tableGateway->insert($data);
+    }
 }
