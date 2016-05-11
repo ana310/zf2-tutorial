@@ -18,7 +18,17 @@ class ProdusForm extends Form {
     public function __construct($name = null) {
         
         parent::__construct('produs');
-        
+        $this->add(array(
+            'name' => 'imagine',
+             'type'  => 'file',
+            'atributes' => array(
+                'value' => 'Imagine',
+                'id' => 'imagine-file',
+            ),
+            'options' => array(
+                'label' => 'Imagine: ',
+            ),
+        ));
         $this->add(array(
             'name' => 'denumire',
             'type' => 'Text',
@@ -83,6 +93,8 @@ class ProdusForm extends Form {
                 'id' => 'insertprodus',
             ),
         ));
+        
+        
         
          
     }

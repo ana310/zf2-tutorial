@@ -10,6 +10,9 @@ use Produs\Form\ProdusForm;
 use Produs\Model\Produs;
 use Produs\Model\Pret;
 use Produs\Model\Stoc;
+use Zend\Validator\File\Size;
+use Produs\Model\Imagine;
+use \Exception;
 
 class ProdusController  extends AbstractActionController {
     
@@ -23,6 +26,7 @@ class ProdusController  extends AbstractActionController {
     protected $stocTable;
     protected $tvaTable;
     protected $categorieTable;
+    protected $imagineTable;
 
 
     /**
@@ -135,11 +139,32 @@ class ProdusController  extends AbstractActionController {
         return $this->categorieTable;
     }
     /**
+     * tabela imagini
+     * @return type
+     */
+    public function getImagineTable(){
+         if(!$this->imagineTable) {
+            $sm = $this->getServiceLocator();
+            $this->imagineTable = $sm->get('Produs\Model\ImagineTable');
+        }
+        return $this->imagineTable;
+    }
+    /**
      * afisare produse --incomplet
      * @return type
      */
     public function indexAction() {
-       return array('produse' => $this->getProdusTable()->fetchAll(),);
+        $atributsets = $this->getAtributsetTable()->fetchAll();
+        foreach ($atributsets as $a) {
+            $categorii[$a->id] = $a->denumire;
+        }
+        $imagine = $this->getImagineTable()->fetchAll();
+        foreach($imagine as $i){
+            $imagini[$i->id_produs] = $i->denumire;
+        }
+       return array('produse' => $this->getProdusTable()->fetchAll(), 'categorii' => $categorii, 'imagini' =>$imagini);
+        
+       
     }
     /**
      * introducere produs
@@ -147,6 +172,7 @@ class ProdusController  extends AbstractActionController {
      */
     public function introducereprodusAction(){
         
+         $this ->layout('produs/layout/layoutprodus.phtml');
          $id = (int) $this->params()->fromRoute('id', 0);
          
          if (!$id) {
@@ -245,55 +271,93 @@ class ProdusController  extends AbstractActionController {
             //validarea datelor introduse in formular si introducerea lor in baza de date
                 if($request->isPost()){
                    
-                    $produsform->setInputFilter($produs->getInputFilter()); 
-                    $produsform->setData($request->getPost());
+                    $nonFile = $request->getPost()->toArray();
+                    $File    = $this->params()->fromFiles('imagine');
+            
+                     $post = array_merge_recursive(
+                        $request->getPost()->toArray(),
+                        $request->getFiles()->toArray()
+                    );
                      
-                     if($produsform->isValid()){
+                    $produsform->setInputFilter($produs->getInputFilter()); 
+                    $produsform->setData($post);
+                     
+                    if($produsform->isValid()){
                     
-                         $produs->exchangeArray($produsform->getData());
-                         $values = $produsform->getData();
-                         $atribute = $this->getAtributsetTable()->joinAtribut($id);
-                         
-                         //adaugarea in tabela produs
-                         $this->getProdusTable()->adaugaProdus($produs,$id);
-                         $id_produs = $this->getProdusTable()->getProdusId();
-                         
-                         //pentru diecare atribut verific tipul si adaug in valoriatributeint sau valoriatributechar
-                         foreach($atribute as $atribut):
-                             $nume = $atribut->atribut->nume;
-                             $tip = $atribut->atribut->tip;
-                             $ida = $atribut->atribut->id;
+                    $size = new Size(array('min'=>200)); //minimum bytes filesize
+                    $adapter = new \Zend\File\Transfer\Adapter\Http(); 
+                    $adapter->setValidators(array($size), $File['name']);
+
+                    if (!$adapter->isValid()){
+                        $dataError = $adapter->getMessages();
+                        $error = array();
+                        foreach($dataError as $key=>$row)
+                            {
+                                $error[] = $row;
+                            } //set formElementErrors
+                        $produsform->setMessages(array('imagine'=>$error ));
+                        } else {
+                           
+                           if((strncmp($File['type'] , 'image',5))){
+                                throw new \Exception("Va rugam inserati o imagine.") ;
+                            }
                             
-                             if($tip == 'number') {
-                                 $this->getValoareIntTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+                            $adapter->setDestination('E:\licenta\xamp\htdocs\zf2-tutorial\imagini\produse');
+                            if ($adapter->receive($File['name'])) {
+                                $produs->exchangeArray($produsform->getData());
                                  
-                             } 
-                             if($tip == 'text') {
-                                 $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
-                                
-                             }
-                         endforeach;
-                         
-                         $pret = new Pret();
-                         $pret->exchangeArray($produsform->getData());
-                         
-                         $this->getPretTable()->adaugaProdus($pret, $id_produs, $valoaretva);
-                         
-                         $stoc = new Stoc();
-                         $stoc->exchangeArray($produsform->getData());
-                         $this->getStocTable()->adaugaProdus($stoc, $id_produs);
-                       
-                          return $this->redirect()->toRoute('produs', array(
-                            'action' => 'index' ));
+                                $values = $produsform->getData();
+                                $atribute = $this->getAtributsetTable()->joinAtribut($id);
+
+                                //adaugarea in tabela produs
+                                $this->getProdusTable()->adaugaProdus($produs,$id);
+                                $id_produs = $this->getProdusTable()->getProdusId();
+
+                                //pentru diecare atribut verific tipul si adaug in valoriatributeint sau valoriatributechar
+                                foreach($atribute as $atribut):
+                                    $nume = $atribut->atribut->nume;
+                                   $tip = $atribut->atribut->tip;
+                                    $ida = $atribut->atribut->id;
+
+                                    if($tip == 'number') {
+                                        $this->getValoareIntTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+
+                                    } 
+                                    if($tip == 'text') {
+                                        $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
+
+                                    }
+                                endforeach;
+
+                                $pret = new Pret();
+                                $pret->exchangeArray($produsform->getData());
+
+                                $this->getPretTable()->adaugaProdus($pret, $id_produs, $valoaretva);
+
+                                $stoc = new Stoc();
+                                $stoc->exchangeArray($produsform->getData());
+                                $this->getStocTable()->adaugaProdus($stoc, $id_produs);
+
+                                $this->getImagineTable()->adaugaProdus($File, $id_produs);
+                                 return $this->redirect()->toRoute('produs', array(
+                                   'action' => 'index' ));
+
+                            }
+                        }   
                      }
                     
                 }
              return array('produsform' => $produsform, 'numefield' => $numefield,);
      
                }
-    
+    /**
+     * afisare produse in functie de atributsets
+     * @return type
+     */
     public function afisareproduseAction(){
-         $idcat = (int) $this->params()->fromRoute('id', 0);
+         
+        $this ->layout('produs/layout/layoutprodus.phtml');
+        $idcat = (int) $this->params()->fromRoute('id', 0);
          
          if (!$idcat) {
              
@@ -377,6 +441,7 @@ class ProdusController  extends AbstractActionController {
         
          $preturi =  $this->getPretTable()->fetchAll();
          $today = date("Y-m-d");
+         
          foreach ($preturi as $p):
             $data_inceput = $p->data_inceput;
             $data_sfarsit = $p->data_sfarsit;
@@ -394,10 +459,27 @@ class ProdusController  extends AbstractActionController {
          endforeach;
          
        return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes,
-           'preturi'=>$pret, 'stoc'=>$stoc);
+           'preturi'=>$pret, 'stoc'=>$stoc, 'id_categorie' => $idcat);
        
     }
-                
+    /**
+     * setarea statusului unui produs ca fiind indisponibil
+     * @return type
+     */
+    public function stergeprodusAction(){
+        
+         $id = (int) $this->params()->fromRoute('id', 0);
+         
+        $produs = $this->getProdusTable()->getProdusById($id);
+        foreach ($produs as $p):
+             $id_atributset = $p->idatributset;
+        endforeach;
+     
+         $this->getProdusTable()->stergeProdus($id);
+          return $this->redirect()->toRoute('produs', array(
+                            'action' => 'afisareproduse', 'id' => $id_atributset ));
+         
+    }
       
 }       
 

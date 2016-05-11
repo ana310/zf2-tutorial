@@ -4,19 +4,21 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <?php
 if(isset($form)){   
-    
+ 
  $form->prepare();
  echo $this->form()->openTag($form);
  echo $this->formRow($form->get('categorii'));
  echo $this->formSubmit($form->get('submit'));
  echo $this->form()->closeTag();
- 
+?>
+<a href="introducereprodus" type="button" class="btn btn-default" >Produs nou</a></br>
+<?php
 }
 if(isset($produse)) {
 ?>
+<a href="../introducereprodus/<?php echo $id_categorie;?>" type="button" class="btn btn-default" >Produs nou</a></br>
 <table class="table">
     <tr>
-        <th></th>
         <th>Denumire</th>
         <th>Brand</th>
         <th>Descriere</th>
@@ -30,12 +32,11 @@ if(isset($produse)) {
     </tr>
 <?php foreach( $produse as $produs) : ?>
     <tr>
-        <td><?php echo $this->escapeHtml($produs->id);?></td>
         <td><?php echo $this->escapeHtml($produs->denumire);?></td>
         <td><?php echo $this->escapeHtml($produs->brand);?></td>
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>
         <td><?php echo $this->escapeHtml($categorie[$produs->idatributset]);?></td>
-        <td><?php echo $this->escapeHtml($produs->status);?></td> 
+        <td><a href="../stergeprodus/<?php echo $produs->id;?>"><?php echo $this->escapeHtml($produs->status);?></a></td> 
         <td><?php  echo $preturi[$produs->id]; ?> </td>
         <td><?php  echo $stoc[$produs->id]; ?></td>
         <?php foreach ($idatribut as $ida):?>
@@ -50,7 +51,7 @@ if(isset($produse)) {
            ?> 
         </td>
         <?php endforeach; ?>
-        
+      
     </tr>
 <?php endforeach; ?>
 

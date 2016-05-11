@@ -4,23 +4,26 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <table class="table">
     <tr>
+        <th>Imagine</th>
         <th>Denumire</th>
         <th>Brand</th>
         <th>Descriere</th>
         <th>Categorie</th>
         <th>Status</th>
     </tr>
-<?php foreach( $produse as $produs) : ?>
+<?php foreach( $produse as $produs):?>
+    
+    
     <tr>
+        <td><img src="img/produse/<?php echo $imagini[$produs->id];?>" alt="<?php echo $imagini[$produs->id];?>" width="200x" height="200px;"/></td>
         <td><?php echo $this->escapeHtml($produs->denumire);?></td>
         <td><?php echo $this->escapeHtml($produs->brand);?></td>
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>
-        <td><?php echo $this->escapeHtml($produs->idatributset);?></td>
+        <td><a href="produs/afisareproduse/<?php echo $produs->idatributset;?>"><?php echo $this->escapeHtml($categorii[$produs->idatributset]);?></a></td>
         <td><?php echo $this->escapeHtml($produs->status);?></td>
         
     </tr>
 <?php endforeach; ?>
-    
     
 </table>
 
