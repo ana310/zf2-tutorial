@@ -50,6 +50,22 @@ class ProdusTable {
         
         return $resultSet;
     }
+    
+    public function stergeProdus($id){
+        
+        
+        $where = array('id' => $id);
+        $resultSet = $this->tableGateway->select($where);
+        foreach($resultSet as $result):
+            if($result->status == 'disponibil') {
+                 $this->tableGateway->update(array('status' => 'indisponibil'), $where);
+            } elseif($result->status == 'indisponibil'){
+                 $this->tableGateway->update(array('status' => 'disponibil'), $where);
+            } 
+        endforeach;
+        
+       
+    }
    
 //    public function joinProdusAtributInt($id,$tip){
 //        $resultSet = $this->tableGateway->select(function (Select $select) use($id,$tip){

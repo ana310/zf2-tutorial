@@ -8,6 +8,7 @@ use Zend\InputFilter\InputFilterInterface;
 use Produs\Model\Atribut;
 use Zend\Validator\Regex;
 use Zend\I18n\Validator\IsFloat;
+use Produs\Model\Imagine;
 
 class Produs implements InputFilterAwareInterface {
     
@@ -48,6 +49,11 @@ class Produs implements InputFilterAwareInterface {
             $inputFilter = new InputFilter(); 
             
             $inputFilter->add(array(
+                    'name' => 'imagine',
+                    'required' => false ,
+                
+            ));
+            $inputFilter->add(array(
                          'name'     => 'denumire',
                          'required' => true,
                          'filters'  => array(
@@ -60,7 +66,7 @@ class Produs implements InputFilterAwareInterface {
                                  'options' => array(
                                      'encoding' => 'UTF-8',
                                      'min'      => 3,
-                                     'max'      => 20,
+                                     'max'      => 200,
                                  ),
                              ),
                          ),

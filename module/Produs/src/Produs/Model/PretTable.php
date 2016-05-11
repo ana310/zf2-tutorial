@@ -14,7 +14,6 @@ namespace Produs\Model;
  * @author Mee
  */
 use Zend\Db\TableGateway\TableGateway;
-use \Exception;
 
 class PretTable {
     

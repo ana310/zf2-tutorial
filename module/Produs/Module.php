@@ -29,6 +29,8 @@ use Produs\Model\Categorie;
 use Produs\Model\CategorieTable;
 use Produs\Model\Tva;
 use Produs\Model\TvaTable;
+use Produs\Model\Imagine;
+use Produs\Model\ImagineTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -171,6 +173,17 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface{
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Tva());
                     return new TableGateway('tva', $dbAdapter, null, $resultSetPrototype);
+                },
+                 'Produs\Model\ImagineTable' => function($sm) {
+                    $tableGateway = $sm->get('ImagineTableGateway');
+                    $table = new ImagineTable($tableGateway);
+                    return $table;
+                },
+                'ImagineTableGateway' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Imagine());
+                    return new TableGateway('imagini', $dbAdapter, null, $resultSetPrototype);
                 },
              ),
         );
