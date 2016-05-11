@@ -1,0 +1,45 @@
+<?php $title = 'Categorii';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+if(isset($form)){   
+    
+ $form->prepare();
+ echo $this->form()->openTag($form);
+ echo $this->formRow($form->get('categorii'));
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();
+ 
+} else
+{
+   $produsform->prepare();
+    echo $this->form()->openTag($produsform);?>
+        <?php $fileElement = $produsform->get('imagine'); ?>
+        <?php echo $this->formLabel($fileElement); ?>
+        <?php echo $this->formFile($fileElement); ?>
+        <?php echo $this->formElementErrors($fileElement); ?>
+<?php
+    echo $this->formRow($produsform->get('denumire'));
+    echo $this->formRow($produsform->get('brand'));
+    echo $this->formRow($produsform->get('descriere'));
+    echo $this->formRow($produsform->get('pret'));
+    echo $this->formRow($produsform->get('pretspecial'));
+    echo $this->formRow($produsform->get('data_inceput'));
+    echo $this->formRow($produsform->get('data_sfarsit'));
+    echo $this->formRow($produsform->get('stoc'));
+         foreach($numefield as $nume):
+            echo $this->formRow($produsform->get($nume));
+         endforeach;
+    echo $this->formSubmit($produsform->get('submit'));
+    echo $this->form()->closeTag();
+}
+
+?>
+<script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+<script>
+    webshims.setOptions('forms-ext', {types: 'date'});
+webshims.polyfill('forms forms-ext');
+</script>
+
+

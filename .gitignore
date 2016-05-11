@@ -9,3 +9,6 @@ nbproject
 .settings
 vendor
 composer.phar
+
+public/img/produse/celmaiprostalbum.jpg
+*.jpg
