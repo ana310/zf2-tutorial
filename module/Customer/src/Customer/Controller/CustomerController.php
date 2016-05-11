@@ -19,15 +19,20 @@ use Customer\Form\AdresaForm;
 use Zend\Session\Container;
 use Customer\Model\Customer;
 use Customer\Model\Adresa;
-
+use Zend\Http\Header\SetCookie;
 
 class CustomerController  extends AbstractActionController{
     
     protected $customerTable;
     protected $adresaTable;
     protected $grupTable;
-    
-    
+    protected $atributsetTable;
+    protected $produsTable;
+    protected $imagineTable;
+
+
+
+
     /**
      * returneaza tabela customer
      * @return type
@@ -61,6 +66,42 @@ class CustomerController  extends AbstractActionController{
         }
         return $this->grupTable;
     }
+      /**
+     * tabela produs
+     * @return type
+     */
+    public function getProdusTable(){
+        
+        if(!$this->produsTable) {
+            $sm = $this->getServiceLocator();
+            $this->produsTable = $sm->get('Produs\Model\ProdusTable');
+        }
+        
+        return $this->produsTable;
+    }
+    /**
+     * tabela atributset
+     * @return type
+     */
+    public function getAtributsetTable() {
+        
+        if(!$this->atributsetTable){
+            $sm = $this->getServiceLocator();
+            $this->atributsetTable = $sm->get('Produs\Model\AtributsetTable');
+        }
+        return $this->atributsetTable;
+    }
+    /**
+     * tabela imagini
+     * @return type
+     */
+    public function getImagineTable(){
+         if(!$this->imagineTable) {
+            $sm = $this->getServiceLocator();
+            $this->imagineTable = $sm->get('Produs\Model\ImagineTable');
+        }
+        return $this->imagineTable;
+    }
     /**
      * actiune afisare grupuri
      * @return type
@@ -73,6 +114,29 @@ class CustomerController  extends AbstractActionController{
      * actiune afisare pagina principala
      */
     public function indexAction() {
+        
+        $this ->layout('customer/layout/layout.phtml');
+             
+         $id = (int) $this->params()->fromRoute('id', 0);
+         if(!$id){
+             $atributsets = $this->getAtributsetTable()->fetchAll();
+             foreach ($atributsets as $a) {
+                $categorii[$a->id] = $a->denumire;
+             }
+             $imagine = $this->getImagineTable()->fetchAll();
+             foreach($imagine as $i){
+                $imagini[$i->id_produs] = $i->denumire;
+             }
+            return array('produse' => $this->getProdusTable()->fetchAll(), 'categorii' => $categorii, 'imagini' =>$imagini);
+         }
+        
+        $token = str_shuffle('0123456789zxcvbnmlkjhgfdsaqwertyuiop#&~_');
+        $ip = $this->getRequest()->getServer('REMOTE_ADDR'); 
+        $cookie = new SetCookie('variabilacos', $token, time() + 24*4*60*60); // now + 1 year
+        $response = $this->getResponse()->getHeaders();
+        $response->addHeader($cookie);
+        
+        
     }
     /**
      * actiune autentificare client
@@ -83,7 +147,7 @@ class CustomerController  extends AbstractActionController{
         $login = new Container('utilizator');
         $username = $login->username;
        
-        $this ->layout('customer/layout/layout.phtml');
+        $this ->layout('customer/layout/layoutlogin.phtml');
         
         if(isset($username)) {
             return $this->redirect()->toRoute('customer', array('action' => 'error', 'id' => 1));
@@ -117,6 +181,7 @@ class CustomerController  extends AbstractActionController{
      */
     public function logoutAction() {
         
+        $this ->layout('customer/layout/layoutlogout.phtml');
         $request = $this->getRequest();
          if ($request->isPost()) {
              $logout = $request->getPost('logout', 'Nu');
@@ -137,6 +202,7 @@ class CustomerController  extends AbstractActionController{
      */
     public function  registerAction(){
         
+        $this ->layout('customer/layout/layout.phtml');
         $form = new RegisterForm();
         $form->get('submit') ->setValue('Inregistrare');
         
@@ -168,6 +234,8 @@ class CustomerController  extends AbstractActionController{
     * @return type
     */
     public function editAction(){
+        
+        $this ->layout('customer/layout/layout.phtml');
         
         $id = (int) $this->params()->fromRoute('id', 0);
          if (!$id) {
@@ -221,6 +289,7 @@ class CustomerController  extends AbstractActionController{
      */
      public function afiseazaadresaAction(){
          
+         $this ->layout('customer/layout/layout.phtml');
          $id = (int) $this->params()->fromRoute('id', 0);
          
          if (!$id) {
@@ -248,6 +317,7 @@ class CustomerController  extends AbstractActionController{
     */
     public function addadresaAction() {
          
+        $this ->layout('customer/layout/layout.phtml');
         $login = new Container('utilizator');
 //        $username = $login->username;
         $id_customer = $login->id;
@@ -282,6 +352,7 @@ class CustomerController  extends AbstractActionController{
      * @return type
      */
     public function editadresaAction() {
+        $this ->layout('customer/layout/layout.phtml');
         
          $id = (int) $this->params()->fromRoute('id', 0);
          
@@ -334,19 +405,25 @@ class CustomerController  extends AbstractActionController{
      * @return type
      */
     public function contAction(){
-        
-        $login = new Container('utilizator');
+         $login = new Container('utilizator');
         $id = $login->id;
-        $this ->layout('customer/layout/layout.phtml');
-        return array(
+        
+        $this ->layout('customer/layout/layoutcont.phtml');
+        if(isset($id)){
+            return array(
           'cont' => $this->getCustomerTable()->getCustomer($id),
         );
+        }
+             
+        
     }
     /**
      * stergere adresa client
      * @return type
      */
     public function stergeadresaAction(){
+        
+        $this ->layout('customer/layout/layout.phtml');
          $id = (int) $this->params()->fromRoute('id', 0);
          if (!$id) {
              return $this->redirect()->toRoute('customer');
@@ -377,12 +454,11 @@ class CustomerController  extends AbstractActionController{
      */
     public function errorAction(){
         
-         $id = (int) $this->params()->fromRoute('id', 0);
-        if($id == 1) {
-            echo "Sunteti deja autentificat.<a href=\"../logout\">Logout</a>";
-        } elseif($id == 2) {
-             echo "S-a produs o eroare, utilizatorul cu acest id nu exista.";
-        }
     }
     
+    public function adaugaincosAction(){
+    
+     
+        }
+
 }

@@ -3,7 +3,7 @@ $this->headTitle($title);
 ?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<h2><?php echo $username;?></h2>
+<p><?php echo "Sunteti autentificat ca: <b>".$username."</b>";?></p>
 <table class="table">
     <tr>
         <th>Username</th>
@@ -12,7 +12,6 @@ $this->headTitle($title);
         <th>Varsta</th>
         <th>Email</th>
         <th>Telefon</th>
-        <th>Adresa</th>
         <th>Activ</th>
     </tr>
 <?php foreach($admini as $admin) : ?>
@@ -23,13 +22,7 @@ $this->headTitle($title);
         <td><?php echo $this->escapeHtml($admin->varsta);?></td>
         <td><?php echo $this->escapeHtml($admin->email);?></td>
         <td><?php echo $this->escapeHtml($admin->telefon);?></td>
-        <td><?php echo $this->escapeHtml($admin->judet).' '.$this->escapeHtml($admin->oras).' '.$this->escapeHtml($admin->adresa);?></td>
         <td><?php echo $this->escapeHtml($admin->activ);?></td>
     </tr>
 <?php endforeach; ?>
-    <tr>
-        <td>
-            <a href="<?php echo $this->url('admin', array('action'=>'logout'));?>">Logout</a>
-        </td>
-    </tr>
 </table>

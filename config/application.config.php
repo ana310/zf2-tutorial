@@ -12,7 +12,7 @@ return array(
         'Application',
         'Produs',
       //'ZfSnapPhpDebugBar',
-        'Album',
+       // 'Album',
         'Admin',
         'Customer',
     ),

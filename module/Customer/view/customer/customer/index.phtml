@@ -1,9 +1,31 @@
-<?php $title = 'Home';
+<?php $title = 'Produse';
 $this->headTitle($title);
 ?>
+<?php if(isset($produs)) {?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <tr>
+        <th>Imagine</th>
+        <th>Denumire</th>
+        <th>Brand</th>
+        <th>Descriere</th>
+        <th>Categorie</th>
+        <th>Status</th>
+    </tr>
+<?php foreach( $produse as $produs):?>
+    
+    
+    <tr>
+        <td><img src="img/produse/<?php echo $imagini[$produs->id];?>" alt="<?php echo $imagini[$produs->id];?>" width="50px" height="50px;"/></td>
+        <td><?php echo $this->escapeHtml($produs->denumire);?></td>
+        <td><?php echo $this->escapeHtml($produs->brand);?></td>
+        <td><?php echo $this->escapeHtml($produs->descriere);?></td>
+        <td><?php echo $this->escapeHtml($categorii[$produs->idatributset]);?></td>
+        <td><?php echo $this->escapeHtml($produs->status);?></td>
+        <td><a href="customer/<?php echo $produs->id; ?>">Adauga in cos</a></td>
+    </tr>
+<?php endforeach; ?>
+    
+</table>
 
-<a href="<?php echo $this->url('customer', array('action'=>'login'));?>">Login</a>
- <?php
-
-        
+<?php }

@@ -78,7 +78,7 @@ class AdminController extends AbstractActionController
          
         $login = new Container('utilizator');
         $username = $login->username;
-        $this ->layout('admin/layout/layout.phtml');
+        $this ->layout('admin/layout/layoutlogin.phtml');
         
         if(isset($username)) {
             return $this->redirect()->toRoute('admin', array('action' => 'error', 'id' => 1));
@@ -86,7 +86,6 @@ class AdminController extends AbstractActionController
         
         $form = new AdminForm();
         $form->get('submit')->setValue('Login');
-        //$this ->layout('layout');
         $request = $this->getRequest();
          
          if ($request->isPost()) {
@@ -112,7 +111,8 @@ class AdminController extends AbstractActionController
      */
     public function aAction() {
         
-         $login = new Container('utilizator');
+        $this ->layout('admin/layout/layoutafisare.phtml');
+        $login = new Container('utilizator');
         $username = $login->username;
                return new ViewModel (array (
             'admini' => $this->getAdminTable()->fetchAll(),
@@ -134,6 +134,7 @@ class AdminController extends AbstractActionController
      */
     public function logoutAction() {
         
+        $this ->layout('admin/layout/layoutlogout.phtml');
         $request = $this->getRequest();
          if ($request->isPost()) {
              $logout = $request->getPost('logout', 'Nu');
@@ -165,6 +166,7 @@ class AdminController extends AbstractActionController
      * @return type
      */
     public function customerAction() {
+        $this ->layout('admin/layout/layoutcustomer.phtml');
         return array (
             'clienti' => $this->getCustomerTable()->fetchAll(),);
     }
@@ -188,7 +190,7 @@ class AdminController extends AbstractActionController
      */
      public function afiseazaadresaAction(){
          
-         
+         $this ->layout('admin/layout/layoutadrese.phtml');
          $id = (int) $this->params()->fromRoute('id', 0);
          
          $idutilizator = new Container('idu');
@@ -216,6 +218,8 @@ class AdminController extends AbstractActionController
     * @return type
     */
     public function editAction(){
+        
+        $this ->layout('admin/layout/layoutadrese.phtml');
         
         $id = (int) $this->params()->fromRoute('id', 0);
          if (!$id) {
@@ -268,6 +272,7 @@ class AdminController extends AbstractActionController
      * @return type
      */
      public function stergeadresaAction(){
+         $this ->layout('admin/layout/layoutadrese.phtml');
          $id = (int) $this->params()->fromRoute('id', 0);
          if (!$id) {
              return $this->redirect()->toRoute('admin');
