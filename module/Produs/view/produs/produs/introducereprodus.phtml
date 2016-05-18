@@ -13,32 +13,57 @@ if(isset($form)){
  
 } else
 {
+    
    $produsform->prepare();
     echo $this->form()->openTag($produsform);?>
-        <?php $fileElement = $produsform->get('imagine'); ?>
-        <?php echo $this->formLabel($fileElement); ?>
-        <?php echo $this->formFile($fileElement); ?>
-        <?php echo $this->formElementErrors($fileElement); ?>
-<?php
-    echo $this->formRow($produsform->get('denumire'));
-    echo $this->formRow($produsform->get('brand'));
-    echo $this->formRow($produsform->get('descriere'));
-    echo $this->formRow($produsform->get('pret'));
-    echo $this->formRow($produsform->get('pretspecial'));
-    echo $this->formRow($produsform->get('data_inceput'));
-    echo $this->formRow($produsform->get('data_sfarsit'));
-    echo $this->formRow($produsform->get('stoc'));
+        <?php $fileElement = $produsform->get('imagine');
+         echo $this->formLabel($fileElement);
+         echo $this->formFile($fileElement);
+         echo $this->formRow($produsform->get('nume')->setAttribute('onBlur','verifica()'))."</br>";
+       ?>
+       <div id ="eroare"></div>
+   
+        <?php echo $this->formRow($produsform->get('denumire'))."</br>";
+    echo $this->formRow($produsform->get('brand'))."</br>";
+    echo $this->formRow($produsform->get('descriere'))."</br>";
+    echo $this->formRow($produsform->get('pret'))."</br>";
+    echo $this->formRow($produsform->get('pretspecial'))."</br>";
+    echo $this->formRow($produsform->get('data_inceput'))."</br>";
+    echo $this->formRow($produsform->get('data_sfarsit'))."</br>";
+    echo $this->formRow($produsform->get('stoc'))."</br>";
          foreach($numefield as $nume):
-            echo $this->formRow($produsform->get($nume));
+            echo $this->formRow($produsform->get($nume))."</br>";
          endforeach;
     echo $this->formSubmit($produsform->get('submit'));
     echo $this->form()->closeTag();
 }
 
-?>
+?>   
+<script>
+   
+    function verifica(){
+        var nume = document.forms["produs"]["nume"].value;
+        var xhttp;    
+        if (nume == "") {
+          document.getElementById("eroare").innerHTML = "";
+          return;
+        }
+       
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (xhttp.readyState == 4 && xhttp.status == 200) {
+             document.getElementById("eroare").innerHTML = xhttp.responseText;
+          }
+        };
+       
+        xhttp.open("GET", " http://zf2-tutorial.localhost/produs/introducereprodus/1?name="+nume, true);
+        xhttp.send();
+//console.log(xhttp.onreadystatechange());
+    }
+    </script>
 <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
 <script>
-    webshims.setOptions('forms-ext', {types: 'date'});
+webshims.setOptions('forms-ext', {types: 'date'});
 webshims.polyfill('forms forms-ext');
 </script>
 

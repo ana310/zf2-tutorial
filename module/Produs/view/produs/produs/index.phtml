@@ -15,7 +15,7 @@ $this->headTitle($title);
     
     
     <tr>
-        <td><img src="img/produse/<?php echo $imagini[$produs->id];?>" alt="<?php echo $imagini[$produs->id];?>" width="200x" height="200px;"/></td>
+        <td><img src="../../img/produse/<?php if(isset($imagini[$produs->id])){echo $imagini[$produs->id];} else { echo "no_image.jpg";}  ?>" alt="<?php if(isset($imagini[$produs->id])){echo $imagini[$produs->id];} else { echo "No image.";}?>" width="50px" height="50px;"/></td>
         <td><?php echo $this->escapeHtml($produs->denumire);?></td>
         <td><?php echo $this->escapeHtml($produs->brand);?></td>
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>

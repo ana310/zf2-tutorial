@@ -31,8 +31,7 @@ class ImagineTable {
     public function adaugaProdus($imagine , $id) {
         $data = array(
            'id_produs' => $id,
-            'denumire' => $imagine['name'],
-            'tip' => $imagine['type'],
+            'denumire' => $imagine,
         );
         
         $this->tableGateway->insert($data);

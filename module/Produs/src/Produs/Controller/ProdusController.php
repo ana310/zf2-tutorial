@@ -159,6 +159,7 @@ class ProdusController  extends AbstractActionController {
             $categorii[$a->id] = $a->denumire;
         }
         $imagine = $this->getImagineTable()->fetchAll();
+        $imagini[] = null;
         foreach($imagine as $i){
             $imagini[$i->id_produs] = $i->denumire;
         }
@@ -174,7 +175,7 @@ class ProdusController  extends AbstractActionController {
         
          $this ->layout('produs/layout/layoutprodus.phtml');
          $id = (int) $this->params()->fromRoute('id', 0);
-         
+ 
          if (!$id) {
              
             $select = new Element\Select('categorii');
@@ -221,6 +222,23 @@ class ProdusController  extends AbstractActionController {
                  'action' => 'introducereprodus','id' => $id_categorie,
              ));
          }
+        
+       //verific daca numele luat din formular corespunde cu ceva din baza de date
+       $str = $this->request->getRequestUri();
+       if(strpos($str,'name') != false){ 
+           $imagini = $this->getImagineTable()->fetchAll();
+           $nume = substr($str, stripos($str,'=')+1);
+           $numenou = str_replace('%20', '-', $nume);
+           
+           foreach($imagini as $i){
+               if(substr($i->denumire,0,stripos($i->denumire,'.')) == strtolower($numenou)){
+                   echo "Exista deja o imagine cu acest nume.";
+                   die;
+               }              
+             } die;
+        }
+       
+       
          
            $idcategorie = $this->getCategorieTable()->joinAtributset($id);
            foreach ($idcategorie as $idcat):
@@ -247,66 +265,82 @@ class ProdusController  extends AbstractActionController {
                
                 $nume = $atribut->atribut->nume;
                 $tip = $atribut->atribut->tip;
-                if($atribut->atribut->required == 1){
-                    $required = 'true' ;
-                } else {
-                    $required = 'false';
+                if($atribut->atribut->required == '1'){
+                    $required = true ;
+                } else{
+                    $required = false;
                 }
                 
+               
                 
                 $element = new Element\Text($nume);
                 $element ->setLabel(ucfirst($nume));
                 $element ->setAttributes(array( 'type' => $tip, 'required' => $required));
-                
                 $produsform->add($element);
                 
                 $inputElement = new Input($nume);
-                $inputElement->isRequired();
-                
                 $inputFilter->add($inputElement);
 
                 $numefield[] = $nume;
             endforeach;
-            
+           
             //validarea datelor introduse in formular si introducerea lor in baza de date
                 if($request->isPost()){
-                   
-                    $nonFile = $request->getPost()->toArray();
-                    $File    = $this->params()->fromFiles('imagine');
-            
-                     $post = array_merge_recursive(
+                    
+                    $post = array_merge_recursive(
                         $request->getPost()->toArray(),
                         $request->getFiles()->toArray()
                     );
-                     
-                    $produsform->setInputFilter($produs->getInputFilter()); 
-                    $produsform->setData($post);
-                     
-                    if($produsform->isValid()){
                     
-                    $size = new Size(array('min'=>200)); //minimum bytes filesize
-                    $adapter = new \Zend\File\Transfer\Adapter\Http(); 
-                    $adapter->setValidators(array($size), $File['name']);
+                   
+                 $produsform->setInputFilter($produs->getInputFilter()); 
+                 $produsform->setData($post);
+                 
+                 
+                    if($produsform->isValid()){
+                        
+                         $filename = $_FILES["imagine"]["name"];
+                         $file_basename = substr($filename, 0, strripos($filename, '.')); // get file extention
+                         $file_ext = substr($filename, strripos($filename, '.')); // get file name
+                         $filesize = $_FILES["imagine"]["size"];
+                         $allowed_file_types = array('.jpg','.png','.gif');	
 
-                    if (!$adapter->isValid()){
-                        $dataError = $adapter->getMessages();
-                        $error = array();
-                        foreach($dataError as $key=>$row)
-                            {
-                                $error[] = $row;
-                            } //set formElementErrors
-                        $produsform->setMessages(array('imagine'=>$error ));
-                        } else {
-                           
-                           if((strncmp($File['type'] , 'image',5))){
-                                throw new \Exception("Va rugam inserati o imagine.") ;
-                            }
-                            
-                            $adapter->setDestination('E:\licenta\xamp\htdocs\zf2-tutorial\imagini\produse');
-                            if ($adapter->receive($File['name'])) {
+                                    if (in_array($file_ext,$allowed_file_types) && ($filesize > 200))
+                                    {	
+                                            // Rename file
+                                            $name = strtolower(str_replace(' ','-',$produsform->getData()['nume']));
+                                            $newfilename = $name. $file_ext;
+                                            if (file_exists("E:/licenta/xamp/htdocs/zf2-tutorial/public/img/produse/" . $newfilename))
+                                            {
+                                                    // file already exists error
+                                                    echo "You have already uploaded this file.";
+                                            }
+                                            else
+                                            {		
+                                                    move_uploaded_file($_FILES["imagine"]["tmp_name"], "E:/licenta/xamp/htdocs/zf2-tutorial/public/img/produse/" . $newfilename);
+                                                    echo "File uploaded successfully.";		
+                                            }
+                                    }
+                                    elseif (empty($file_basename))
+                                    {	
+                                            // file selection error
+                                            echo "Please select a file to upload.";
+                                    } 
+                                    elseif ($filesize < 200)
+                                    {	
+                                            // file size error
+                                            echo "The file you are trying to upload is too large.";
+                                    }
+                                    else
+                                    {
+                                            // file type error
+                                            echo "Only these file typs are allowed for upload: " . implode(', ',$allowed_file_types);
+                                            unlink($_FILES["imagine"]["tmp_name"]);
+                                    }      
+
                                 $produs->exchangeArray($produsform->getData());
-                                 
                                 $values = $produsform->getData();
+                                
                                 $atribute = $this->getAtributsetTable()->joinAtribut($id);
 
                                 //adaugarea in tabela produs
@@ -314,16 +348,16 @@ class ProdusController  extends AbstractActionController {
                                 $id_produs = $this->getProdusTable()->getProdusId();
 
                                 //pentru diecare atribut verific tipul si adaug in valoriatributeint sau valoriatributechar
-                                foreach($atribute as $atribut):
+                               foreach($atribute as $atribut):
                                     $nume = $atribut->atribut->nume;
-                                   $tip = $atribut->atribut->tip;
+                                    $tip = $atribut->atribut->tip;
                                     $ida = $atribut->atribut->id;
 
                                     if($tip == 'number') {
                                         $this->getValoareIntTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
 
                                     } 
-                                    if($tip == 'text') {
+                                   if($tip == 'text') {
                                         $this->getValoareVarcharTable()->adaugaProdus($id_produs, $ida, $values[$nume]);
 
                                     }
@@ -332,20 +366,20 @@ class ProdusController  extends AbstractActionController {
                                 $pret = new Pret();
                                 $pret->exchangeArray($produsform->getData());
 
-                                $this->getPretTable()->adaugaProdus($pret, $id_produs, $valoaretva);
+                               $this->getPretTable()->adaugaProdus($pret, $id_produs, $valoaretva);
 
                                 $stoc = new Stoc();
                                 $stoc->exchangeArray($produsform->getData());
                                 $this->getStocTable()->adaugaProdus($stoc, $id_produs);
 
-                                $this->getImagineTable()->adaugaProdus($File, $id_produs);
-                                 return $this->redirect()->toRoute('produs', array(
-                                   'action' => 'index' ));
+                                
+                               $this->getImagineTable()->adaugaProdus($newfilename, $id_produs);
+                                
+                               
+                                return $this->redirect()->toRoute('produs', array(
+                                   'action' => 'afisareproduse' ));
 
-                            }
-                        }   
-                     }
-                    
+                            } 
                 }
              return array('produsform' => $produsform, 'numefield' => $numefield,);
      
@@ -458,7 +492,13 @@ class ProdusController  extends AbstractActionController {
              $stoc[$s->id_produs] = $s->stoc;
          endforeach;
          
-       return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes,
+          $imagine = $this->getImagineTable()->fetchAll();
+        $imagini[] = null;
+        foreach($imagine as $i){
+            $imagini[$i->id_produs] = $i->denumire;
+        }
+         
+       return array('produse' => $produse, 'categorie' => $categorie, 'atribute' => $atribute, 'atributes' => $atributes, 'imagini' => $imagini,
            'preturi'=>$pret, 'stoc'=>$stoc, 'id_categorie' => $idcat);
        
     }
