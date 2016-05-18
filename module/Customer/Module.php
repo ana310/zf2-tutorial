@@ -14,6 +14,12 @@ use Customer\Model\Adresa;
 use Customer\Model\AdresaTable;
 use Customer\Model\Grup;
 use Customer\Model\GrupTable;
+use Customer\Model\Cos;
+use Customer\Model\CosTable;
+use Customer\Model\ProdusCos;
+use Customer\Model\ProdusCosTable;
+use Customer\Model\Comanda;
+use Customer\Model\ComandaTable;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 /**
@@ -80,6 +86,43 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface{
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Grup());
                     return new TableGateway('grup', $dbAdapter, null, $resultSetPrototype);
+                    
+                },
+                'Customer\Model\CosTable' => function($sm) {
+                    $tableGateway = $sm->get('CosTableGateway');
+                    
+                    $table = new CosTable($tableGateway);
+                    return $table;
+                },
+                'CosTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Cos());
+                    return new TableGateway('cos', $dbAdapter, null, $resultSetPrototype);
+                    
+                },
+                'Customer\Model\ProdusCosTable' => function($sm) {
+                    $tableGateway = $sm->get('ProdusCosTableGateway');
+                    $table = new ProdusCosTable($tableGateway);
+                    return $table;
+                },
+                'ProdusCosTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new ProdusCos());
+                    return new TableGateway('produscos', $dbAdapter, null, $resultSetPrototype);
+                    
+                },
+                'Customer\Model\ComandaTable' => function($sm) {
+                    $tableGateway = $sm->get('ComandaTableGateway');
+                    $table = new ComandaTable($tableGateway);
+                    return $table;
+                },
+                'ComandaTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Comanda());
+                    return new TableGateway('comanda', $dbAdapter, null, $resultSetPrototype);
                     
                 },
             ),
