@@ -48,7 +48,7 @@ class ProdusTable {
         $where = array('id' => $id);
         $resultSet = $this->tableGateway->select($where);
         
-        return $resultSet;
+        return $resultSet->current();
     }
     
     public function stergeProdus($id){
