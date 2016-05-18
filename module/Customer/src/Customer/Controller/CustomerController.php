@@ -29,7 +29,9 @@ class CustomerController  extends AbstractActionController{
     protected $atributsetTable;
     protected $produsTable;
     protected $imagineTable;
-
+    protected $cosTable;
+    protected $produscosTable;
+    protected $comandaTable;
 
 
 
@@ -103,6 +105,41 @@ class CustomerController  extends AbstractActionController{
         return $this->imagineTable;
     }
     /**
+     * tabela cos
+     * @return type
+     */
+    public function getCosTable(){
+        if(!$this->cosTable) {
+            $sm = $this->getServiceLocator();
+            $this->cosTable = $sm->get('Customer\Model\CosTable');
+            
+        }
+        return $this->cosTable;
+    }
+    /**
+     * tabela produscos
+     * @return type
+     */
+    public function getProdusCosTable(){
+       if(!$this->produscosTable) {
+            $sm = $this->getServiceLocator();
+            $this->produscosTable = $sm->get('Customer\Model\ProdusCosTable');
+        }
+        return $this->produscosTable; 
+    }
+    /**
+     * tabela comanda
+     * @return type
+     */
+    public function getComandaTable(){
+        if(!$this->comandaTable) {
+            $sm = $this->getServiceLocator();
+            $this->comandaTable = $sm->get('Customer\Model\ComandaTable');
+        }
+        return $this->comandaTable;
+    }
+
+    /**
      * actiune afisare grupuri
      * @return type
      */
@@ -117,25 +154,30 @@ class CustomerController  extends AbstractActionController{
         
         $this ->layout('customer/layout/layout.phtml');
              
-         $id = (int) $this->params()->fromRoute('id', 0);
-         if(!$id){
-             $atributsets = $this->getAtributsetTable()->fetchAll();
+         $idprodus = (int) $this->params()->fromRoute('id', 0);
+         if(!$idprodus){
+                $atributsets = $this->getAtributsetTable()->fetchAll();
              foreach ($atributsets as $a) {
-                $categorii[$a->id] = $a->denumire;
+                 $categorii[$a->id] = $a->denumire;
              }
              $imagine = $this->getImagineTable()->fetchAll();
+             $imagini[] = null;
              foreach($imagine as $i){
-                $imagini[$i->id_produs] = $i->denumire;
+                 $imagini[$i->id_produs] = $i->denumire;
              }
             return array('produse' => $this->getProdusTable()->fetchAll(), 'categorii' => $categorii, 'imagini' =>$imagini);
          }
-        
-        $token = str_shuffle('0123456789zxcvbnmlkjhgfdsaqwertyuiop#&~_');
-        $ip = $this->getRequest()->getServer('REMOTE_ADDR'); 
-        $cookie = new SetCookie('variabilacos', $token, time() + 24*4*60*60); // now + 1 year
-        $response = $this->getResponse()->getHeaders();
-        $response->addHeader($cookie);
-        
+//        
+//        $token = str_shuffle('0123456789zxcvbnmlkjhgfdsaqwertyuiop#&~_');
+//        $ip = $this->getRequest()->getServer('REMOTE_ADDR'); 
+//        $cookie = new SetCookie('variabilacos', $token, time() + 24*7*60*60);
+//        $response = $this->getResponse()->getHeaders();
+//        $response->addHeader($cookie);
+//        
+//        $this->getCosTable()->adaugaCos($token, $ip);
+//        $idcos = $this->getCosTable()->getLastInsertId();
+//        
+//        $this->getProdusCosTable()->adaugaCos();
         
     }
     /**
@@ -456,9 +498,20 @@ class CustomerController  extends AbstractActionController{
         
     }
     
-    public function adaugaincosAction(){
+    public function detaliiprodusAction(){
     
+        $idprodus = (int) $this->params()->fromRoute('id', 0);
+        if(!$idprodus){
+            return $this->redirect()->toRoute('customer', array('action' => 'index'));
+        }
      
+        $produse = $this->getProdusTable()->getProdusById($idprodus);
+        
+             echo "<pre>";
+        print_r($produs);die;
+        
+       
+        
         }
 
 }
