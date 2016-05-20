@@ -67,20 +67,32 @@ class ProdusTable {
        
     }
    
-//    public function joinProdusAtributInt($id,$tip){
-//        $resultSet = $this->tableGateway->select(function (Select $select) use($id,$tip){
-//            if($tip == 'text'){
-//                $select->join(array('vat' => 'valoriatributetext'),'produs.id = vat.id_produs');
-//                $select->join(array('a' => 'atribut'),'vat.id_atribut = a.id');
-//            }
-//            if($tip == 'number'){
-//               $select->join(array('vai' => 'valoriatributeint'),'produs.id = vai.id_produs'); 
-//               $select->join(array('a' => 'atribut'),'vai.id_atribut = a.id');
-//            }
-//            
-//            $where = array('produs.id' => $id);
-//            $select->where($where);
-//        });
-//        return $resultSet;
-//    }
+    public function joinProdus($id){
+        $resultSet = $this->tableGateway->select(function (Select $select) use($id) {
+                $select->join(array('p' =>'pret'),'produs.id = p.id_produs');
+                $select->join(array('s' => 'stoc'),'produs.id = s.id_produs');
+                $where = array('produs.id' => $id);
+                $select->where($where);
+            }); 
+        return $resultSet->current();
+    }
+    public function joinValoariInt($id){
+        $resultSet = $this->tableGateway->select(function (Select $select) use($id) {
+                $select->join(array('vi' => 'valoriatributeint'), 'produs.id = vi.id_produs');
+                $where = array('produs.id' => $id);
+                $select->where($where);
+            }); 
+        return $resultSet;
+    }
+
+    public function joinValoariVarchar($id){
+        $resultSet = $this->tableGateway->select(function (Select $select) use($id) {
+                $select->join(array('vt' => 'valoriatributetext'), 'produs.id = vt.id_produs');
+                $where = array('produs.id' => $id);
+                $select->where($where);
+            }); 
+        return $resultSet;
+    }
+    
+   
 }

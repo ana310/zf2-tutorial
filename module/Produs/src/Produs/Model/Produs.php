@@ -6,9 +6,11 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 use Produs\Model\Atribut;
-use Zend\Validator\Regex;
-use Zend\I18n\Validator\IsFloat;
 use Produs\Model\Imagine;
+use Produs\Model\Pret;
+use Produs\Model\Stoc;
+use Produs\Model\ValoareInt;
+use Produs\Model\ValoareVarchar;
 
 class Produs implements InputFilterAwareInterface {
     
@@ -19,6 +21,10 @@ class Produs implements InputFilterAwareInterface {
     public $denumire;
     public $brand;
     public $descriere;
+    public $pret;
+    public $stoc;
+    public $valoareint;
+    public $valoarevarchar;
     /**
      * 
      * @param type $data
@@ -30,6 +36,15 @@ class Produs implements InputFilterAwareInterface {
         $this->denumire = (!empty($data['denumire'])) ? $data['denumire'] : null;
         $this->brand = (!empty($data['brand'])) ? $data['brand'] : null;
         $this->descriere = (!empty($data['descriere'])) ? $data['descriere'] : null;
+        $this->pret = new Pret();
+        $this->pret->exchangeArray($data);
+        $this->stoc = new Stoc();
+        $this->stoc->exchangeArray($data);
+        $this->valoareint = new ValoareInt();
+        $this->valoareint->exchangeArray($data);
+        $this->valoarevarchar = new ValoareVarchar();
+        $this->valoarevarchar->exchangeArray($data);
+                
     } 
     /**
      * used for bind

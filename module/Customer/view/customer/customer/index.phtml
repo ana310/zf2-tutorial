@@ -1,9 +1,36 @@
-<?php $title = 'Home';
+<?php $title = 'Produse';
 $this->headTitle($title);
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+if(isset($produse)){ ?>
+  <h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <tr>
+        <th>Imagine</th>
+        <th>Denumire</th>
+        <th>Brand</th>
+        <th>Descriere</th>
+        <th>Categorie</th>
+        <th>Status</th>
+    </tr>
+<?php foreach( $produse as $produs):?>
+    
+    
+    <tr>
+        <td><img src="../../img/produse/<?php if(isset($imagini[$produs->id])){echo $imagini[$produs->id];} else { echo "no_image.jpg";}  ?>" alt="<?php if(isset($imagini[$produs->id])){echo $imagini[$produs->id];} else { echo "No image.";}?>" width="50px" height="50px;"/></td>
+        <td><?php echo $this->escapeHtml($produs->denumire);?></td>
+        <td><?php echo $this->escapeHtml($produs->brand);?></td>
+        <td><?php echo $this->escapeHtml($produs->descriere);?></td>
+        <td><a href="produs/afisareproduse/<?php echo $produs->idatributset;?>"><?php echo $this->escapeHtml($categorii[$produs->idatributset]);?></a></td>
+        <td><?php echo $this->escapeHtml($produs->status);?></td>
+        <td><a href="customer/detaliiprodus/<?php echo $produs->id;?>">Detalii produs</a></td>
+        <td><a href="customer/index/<?php echo $produs->id;?>">Adauga in cos</a></td>
+    </tr>
+<?php endforeach; ?>
+    
+</table> 
 
-<a href="<?php echo $this->url('customer', array('action'=>'login'));?>">Login</a>
- <?php
+<?php
+}
 
-        
+

@@ -36,4 +36,16 @@ class ImagineTable {
         
         $this->tableGateway->insert($data);
     }
+    
+    public function getImagineByProdusId($id){
+        $where = array('id_produs'=> $id);
+        $resultSet = $this->tableGateway->select($where);
+        return $resultSet;
+    }
+    
+    public function getDefaultImage($id){
+        $where = array('id_produs'=> $id, 'standard' => 1);
+        $resultSet = $this->tableGateway->select($where);
+        return $resultSet;
+    }
 }

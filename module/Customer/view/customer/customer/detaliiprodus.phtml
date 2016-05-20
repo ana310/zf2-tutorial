@@ -1,0 +1,40 @@
+<!-- afisare titlu-->
+<?php $title = $this->escapeHtml($produs->denumire);
+$this->headTitle($title); ?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<!--afisare imagine principala-->
+<img src="../../img/produse/<?php if(isset($imaginedefault)){echo $imaginedefault;} else { echo "no_image.jpg";}  ?>" alt="<?php if(isset($imaginedefault)){echo $imaginedefault;} else { echo "No image.";}?>" width="250px" height="250px;"/></br>
+
+
+<!--afisare imagini-->
+<?php
+foreach($imagini as $imagine){ ?>
+<img src="../../img/produse/<?php if(isset($imagine->denumire)){echo $imagine->denumire;} else { echo "no_image.jpg";}  ?>" alt="<?php if(isset($imagine->denumire)){echo $imagine->denumire;} else { echo "No image.";}?>" width="100px" height="100px;"/>
+<?php }?>
+</br>
+ <?php echo "Brand; ". $this->escapeHtml($produs->brand)."<br>";?>  
+ <?php echo "Descriere: ". $this->escapeHtml($produs->descriere)."<br>";?> 
+ <?php 
+ if($produs->stoc->stoc != 0 && $produs->status!= 'indisponibil'){
+     echo 'Status : disponibil.</br>';
+ } else {
+     echo 'Status: indisponibil.</br>';
+ } ?> 
+
+ <?php 
+ $datastart = $produs->pret->data_inceput;
+ $datasfarsit = $produs->pret->data_sfarsit;
+ $azi  = date("Y-m-d");
+
+ if($datastart < $azi && $azi < $datasfarsit){
+     echo "Pret: <del>".$this->escapeHtml($produs->pret->pretcutva)."</del>".$this->escapeHtml($produs->pret->pretspecialcutva)."<br>";
+ } else {
+    echo $this->escapeHtml($produs->pret->pretcutva);   
+ }?> 
+<?php
+foreach($atribute as $key => $atribut){
+    echo ucfirst($atribute[$key])." : ".$valoriatribute[$key]. "</br>";
+}
+
+

@@ -5,41 +5,34 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-namespace Produs\Model;
-
+namespace Customer\Model;
 /**
- * Description of Imagine
+ * Description of Comanda
  *
  * @author Mee
  */
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
-
-class Imagine implements InputFilterAwareInterface{
+class Comanda implements InputFilterAwareInterface {
     
     public $id;
-    public $denumire;
-    public $id_produs;
-    public $standard;
+    public $idcos;
+    public $pret;
+    public $status;
     
     public function exchangeArray($data){
-    
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
-        $this->denumire = (!empty($data['denumire'])) ? $data['denumire'] : null;
-        $this->id_produs = (!empty($data['id_produs'])) ? $data['id_produs'] : null;
-        $this->standard = (!empty($data['standard'])) ? $data['standard'] : null;
-        
+        $this->idcos = (!empty($data['id_cos'])) ? $data['id_cos'] : null;
+        $this->pret = (!empty($data['pret'])) ? $data['pret'] : null;
+        $this->status = (!empty($data['status'])) ? $data['status'] : null;
     }
     
     public function getInputFilter() {
-       
+        
     }
-
     public function setInputFilter(InputFilterInterface $inputFilter) {
-        throwException("Nu il setez");
+        
     }
-    
-   
+//put your code here
 }
