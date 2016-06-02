@@ -18,6 +18,8 @@ class ProdusForm extends Form {
     public function __construct($name = null) {
         
         parent::__construct('produs');
+        
+        $this->setAttribute('onSubmit','return ValidareFormular()');
         $this->add(array(
             'name' => 'imagine',
              'type'  => 'file',
@@ -28,6 +30,14 @@ class ProdusForm extends Form {
             'options' => array(
                 'label' => 'Imagine: ',
             ),
+        ));
+        $this->add(array(
+            'name' => 'nume',
+            'type' => 'Text',
+            'atributes' => array(
+                'id' => 'nume',
+            ),
+            
         ));
         $this->add(array(
             'name' => 'denumire',

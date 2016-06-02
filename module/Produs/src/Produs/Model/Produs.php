@@ -147,6 +147,23 @@ class Produs implements InputFilterAwareInterface {
                          'required' => true,
                          
             ));
+            $inputFilter->add(array(
+                         'name'     => 'nume',
+                         'required' => true,
+                         'filters'  => array(
+                             array('name' => 'StripTags'),
+                             array('name' => 'StringTrim'),
+                         ),
+                         'validators' => array(
+                             array(
+                                 'name'    => 'StringLength',
+                                 'options' => array(
+                                     'encoding' => 'UTF-8',
+                                     'min'      => 3,
+                                 ),
+                             ),
+                         ),
+            ));
           $this->inputFilter = $inputFilter;  
         }
         return $this->inputFilter;

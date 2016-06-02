@@ -19,6 +19,7 @@ if(isset($produse)) {
 <a href="../introducereprodus/<?php echo $id_categorie;?>" type="button" class="btn btn-default" >Produs nou</a></br>
 <table class="table">
     <tr>
+        <th>Imagine</th>
         <th>Denumire</th>
         <th>Brand</th>
         <th>Descriere</th>
@@ -31,7 +32,8 @@ if(isset($produse)) {
 <?php } ?>
     </tr>
 <?php foreach( $produse as $produs) : ?>
-    <tr>
+    <tr> 
+        <td><img src="../../img/produse/<?php if(isset($imagini[$produs->id])){echo $imagini[$produs->id];} else { echo "no_image.jpg";}  ?>" alt="<?php if(isset($imagini[$produs->id])){echo $imagini[$produs->id];} else { echo "No image.";}?>" width="50px" height="50px;"/></td>
         <td><?php echo $this->escapeHtml($produs->denumire);?></td>
         <td><?php echo $this->escapeHtml($produs->brand);?></td>
         <td><?php echo $this->escapeHtml($produs->descriere);?></td>
